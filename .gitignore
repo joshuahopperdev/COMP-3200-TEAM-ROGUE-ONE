@@ -1,0 +1,132 @@
+# =====================================================================
+# COMP 3200 -- Deep Learning -- team repository ignore rules
+# =====================================================================
+#
+# This file tells Git what NOT to track. It ships complete, and it is
+# worth reading once rather than skipping, because two of the rules
+# below prevent a mess that does not show up until Week 11 -- by which
+# point your repo has a hundred megabytes of downloaded junk in its
+# history and no easy way to get it out.
+#
+# The short version:
+#   - Junk that a machine regenerates  -> ignored (this file)
+#   - Data you downloaded              -> ignored (re-downloadable)
+#   - Anything you are graded on       -> COMMITTED (see the block at
+#                                         the bottom before you add a
+#                                         new line here)
+#
+# Adding a rule is easy and hard to notice. If you add one, add a
+# comment saying why, and check it against "Do not add these" below.
+# =====================================================================
+
+
+# --- Python ----------------------------------------------------------
+# Byte-compiled files. Python rewrites these from your .py source on
+# every run, so committing them only creates merge conflicts.
+__pycache__/
+*.pyc
+# same as *.pyc, plus the .pyo / .pyd variants
+*.py[cod]
+*$py.class
+
+# Virtual environments. If you make one, it is yours and local --
+# hundreds of megabytes of installed packages that your teammate's
+# machine cannot use anyway. (The course installs with a plain
+# `pip install numpy matplotlib`; no venv is required.)
+.venv/
+venv/
+env/
+
+
+# --- Jupyter ---------------------------------------------------------
+# Autosave snapshots that Jupyter writes beside your notebook.
+# NOTE: this ignores the *checkpoints folder*, not your notebooks.
+# The assembled weekN notebook (forge.ipynb, forms.ipynb, ...) is a
+# graded deliverable and must be committed.
+.ipynb_checkpoints/
+
+
+# --- Datasets --------------------------------------------------------
+# Every corpus this course uses is downloaded by you, from a public
+# source, and is large. It does not belong in Git history: your
+# teammates can fetch it in thirty seconds, and once a 30 MB text file
+# is committed it stays in the history forever even after you delete
+# it.
+#
+# A bare `data/` with no leading slash matches a folder named `data`
+# ANYWHERE in the repo -- so this one line covers week11/data/,
+# week12/data/, week14/data/, week15/data/ and final_project/data/.
+#
+# Where to get each file: see DATASETS.md in the repo root.
+data/
+
+
+# --- Cached arrays and downloaded model data -------------------------
+# INFERENCE -- this rule is not stated in any assignment. It is here
+# because of how the MNIST loader works, and it is the single cheapest
+# line in this file:
+#
+#   Weeks 8, 9 and 10 each ask you to put a `data.py` loader inside the
+#   week folder. It downloads mnist.npz (~11 MB) and caches it *next
+#   to your code* -- week8/mnist.npz, week9/mnist.npz, week10/mnist.npz
+#   -- not in a data/ folder. Without this line, that is three 11 MB
+#   binaries committed by accident, by whichever teammate ran the code
+#   first.
+#
+#   Week 12 adds a fourth: after training you save the four weight
+#   tensors with np.savez, which writes a .npz too.
+#
+# Narrowed to the cache filename on purpose. A blanket *.npz would also
+# swallow the weight tensors Week 12 has you save with np.savez, which you
+# may well want to keep.
+#
+# If you ever have an .npz you genuinely want in the repo, commit it on
+# purpose with: git add -f path/to/that.npz
+mnist.npz
+
+
+# --- OS junk ---------------------------------------------------------
+# Metadata files your operating system scatters into folders. Nobody
+# has ever wanted these in a diff.
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+desktop.ini
+
+
+# --- Editor / IDE ----------------------------------------------------
+# Per-developer settings. Your teammate's editor config is not your
+# business, and vice versa.
+*.swp
+*~
+.idea/
+.vscode/
+
+
+# =====================================================================
+# DO NOT ADD THESE. Read this before "tidying up" the file.
+# =====================================================================
+#
+# *.png  -- NEVER. Plots are graded deliverables in this course and
+#           must be committed. Ignoring images would silently zero
+#           several rubric lines:
+#             week4/fig1_weights.png, week4/fig2_frozen.png
+#             week8/curves_part1.png, week8/curves_part3.png
+#             week9/forms_plot.png,   week9/compare_plot.png
+#             week10/kernels.png
+#           Editors and generic Python .gitignore templates love to
+#           suggest this one. Say no.
+#
+# *.csv  -- NEVER. Week 12 grades "perplexity log saved"; that log is
+#           a CSV you commit.
+#
+# *.ipynb -- NEVER. The assembled notebook is the headline deliverable
+#           from Week 8 onward.
+#
+# *.md / README.md -- NEVER. Documentation is graded every week.
+#
+# If you are about to add a pattern and you are not certain, run
+# `git status` first and see what it would hide. If it hides something
+# a rubric names, it is the wrong pattern.
+# =====================================================================
