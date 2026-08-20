@@ -3,15 +3,6 @@
 > COMP 3200 — Deep Learning · Fall 2026 · Harding University · Dr. Joe Faith
 > *The Cybernetic Heresy*
 
-> **Read this first — then delete this block.**
-> This README ships deliberately unfinished. Filling it in *is* Assignment 1,
-> Part A: **four of the twenty Week 1 points live on this page** — two for the
-> team name, members and communication channel, two for roles plus a rotation
-> plan. Replace every **TODO** below, delete this blockquote, and open a PR.
-> Once the repo is standing you can drop the numbered setup steps too — but keep
-> the deadline table under them, because it's the only copy in the repo.
-> Everything else on the page is here to stay.
-
 ---
 
 ## Week 1: stand this repo up
@@ -78,27 +69,21 @@ your own work.
 
 ---
 
-**TODO:** one or two sentences on who your team is. A team name that means
-something to you beats a clever one that doesn't.
-
+Following in the path of Master Robbie Rotten, we honor the number one as we 
+are now a rogue actor without our master.
 ---
 
 ## The Crew
 
-**TODO:** add a row per member. Handles are how your teammates find each
-other's PRs, so use the real GitHub handle, not a nickname.
 
-| Name | GitHub handle | Role |
+| Name | GitHub handle | Role, 8/18- (current) |
 |---|---|---|
-| TODO | @todo | TODO |
-| TODO | @todo | TODO |
-| TODO | @todo | TODO |
-| TODO | @todo | TODO |
-| TODO | @todo | TODO |
+| Caleb Hopper | @joshuahopperdev | Repo Lead, Standup Lead |
+| Josiah Duvalian | @jduvalian | Review Coordinator |
+| Nathanael Williams | @Williams-Nathanael | Documentation Lead |
+| Oliver Pham | @Odog0 | Integration Tester |
 
-**Communication channel:** TODO — where does this team actually talk? (Discord,
-GroupMe, Slack, a text thread — I don't care which, I care that there is one
-and that everyone is in it.)
+**Communication channel:** Discord chat
 
 ---
 
@@ -117,13 +102,7 @@ seats for that stretch. Descriptions are from the syllabus.
 
 ### Rotation plan
 
-**TODO:** roles rotate every few weeks so everyone gets reps in every seat.
-Write down how yours will rotate — how often, and in what order. Two sentences
-is plenty.
-
-> Don't skip this one. The Week 1 rubric grades "roles assigned, documented in
-> README, and rotation plan noted," and the plan is the half people forget.
-
+We will rotate every 1-4 weeks on an ad hoc basis, rotating earlier if the way one role is handled is causing problems and later if it's going well. Most of the time we will rotate every 2-3 weeks. Roles will be assigned on an ad hoc basis as well, generally trying to assign people to roles they have not had before.
 ---
 
 ## How this repo works
