@@ -1,4 +1,4 @@
-# TODO: Your Team Name
+# Team Rogue One
 
 > COMP 3200 — Deep Learning · Fall 2026 · Harding University · Dr. Joe Faith
 > *The Cybernetic Heresy*
