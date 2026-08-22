@@ -5,12 +5,14 @@
 
 def main():
     """Print a short introduction to the crew."""
+    # Minimum requirements
     print("Name:    Josiah Duvalian")
     print("Fact:    Co-owns a Minecraft manhunt server and develops plugins for it.")
     print(
         "Problem: Intelligent matchmaking for manhunt queues and last line of defense for an antiswear."
     )
     print()
+    # Extra information
     print("Discord:               Jonomore (includejodrummer.h)")
     print("Other CS classes:      Functional/Generic Programming")
     print("                       AI: Knowledge, Search, and Reasoning")
