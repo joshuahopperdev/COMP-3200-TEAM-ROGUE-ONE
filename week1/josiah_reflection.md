@@ -33,9 +33,9 @@ The problem of antiswear programs and chat censoring can be achieved fairly well
 
 ### 4. Your own scenario
 
-- **The scenario:** A school curates a given student's cirriculum to use the best learning method from a fixed set of known and developed methods based on said student's performance (most notably but not exclusively, score) on a fixed number of tests and other diagnostic examinations.
-- **Supervised or unsupervised?** Supervised because the developed learning methods are the labels.
-- **Parametric or nonparametric?** Parameteric because the exams are the parameters and there are a fixed number of them.
+- **The scenario:** A drum machine that makes a groove in a style and/or other customizable settings given by the user. It would build this groove based on existing songs of that style.
+- **Supervised or unsupervised?** Unsupervised because each groove should be original regarding previous predictions and existing well-known grooves in that style.
+- **Parametric or nonparametric?** Nonparametric because the user can choose to use some settings and not others, and those settings (style, tempo, complexity, etc) are the parameters.
 
 ---
 
@@ -88,7 +88,7 @@ Collecting training/testing data would be difficult, and it could be any combina
 
 - [x] All four parts answered — check against the headings above, not your memory
 - [x] Part 2: both axes **and** a justification, for all four scenarios
-- [ ] Part 2 #4 uses a combination you didn't already use
+- [x] Part 2 #4 uses a combination you didn't already use
 - [x] Part 4 #4 is answered — it's the one people skip
 - [x] Your own words throughout (see below)
 - [x] The file is `week1/yourname_reflection.md` — not this template
