@@ -50,18 +50,18 @@ lucky guess from understanding.*
 *…and it has a fixed set of internal parameters it adjusts during training.*
 
 - **Supervised or unsupervised?**
-Unsupervised.
+Unsupervised, maybe. It could easily be doing it purely based on a set of tags on each song, but if not, it's unsupervised (presumably based on association, what songs both you and other users listen to together?).
 - **Parametric or nonparametric?**
-Parametric.
+Parametric - it might output 2 playlists or 10 depending on the data, but its guts have a fixed number of parameters.
 
 ### 2. Hospital — pneumonia from 100,000 labeled chest X-rays
 
 *…and the model has millions of fixed weights adjusted during training.*
 
 - **Supervised or unsupervised?**
-Supervised.
+Supervised - you have a bunch of true/false labeled data, this is as supervised as it gets.
 - **Parametric or nonparametric?**
-Nonparametric.
+Parametric- I'm not sure what "fixed weights adjusted during training" would sensibly mean, but you're stuck with a given number of weights.
 
 ### 3. Retail site — recommendations from the 10 most similar past customers
 
@@ -69,9 +69,10 @@ Nonparametric.
 learned ahead of time.*
 
 - **Supervised or unsupervised?**
-Supervised.
+Supervised. We're giving it data of "all 1s", but still labeled data of "this was bought"; one could argue that it's a selection mechanism instead of labeling, but I don't think that holds water.
 - **Parametric or nonparametric?**
-Strictly I don't think we can verify this one from the problem statement, but likely nonparametric.
+I'm not totally sure we can verify this one, but nonparametric; its parameters aren't decided in advance.
+
 ### 4. Your own scenario
 
 *Pick a combination you have **not** already used in 1–3.*
@@ -79,9 +80,9 @@ Strictly I don't think we can verify this one from the problem statement, but li
 - **The scenario:**
 k-medoids on a bunch of survey responses encoded by semantic embedding, but you're picking k based on testing a bunch of runs, several of each of several values of k, and going for the one with the lowest average silhouette score.
 - **Supervised or unsupervised?**
-Unsupervised.
+Unsupervised. It's just raw data, no labels as such.
 - **Parametric or nonparametric?**
-Nonparametric.
+Nonparametric. k-medoids is already nonparametric, but picking that parameter based on another loss function makes it definitively nonparametric.
 ---
 
 ## Part 3 — The Knobs Mental Model (6 pts)
@@ -110,7 +111,7 @@ is `0.85`.
 - **(b) weight set to `0` —** *(and what that means conceptually)*
 0, and it's obliterating the information.
 - **(c) weight negative, `-0.1` —** *(and what a negative weight could represent)*
--0.85, and it's 
+-0.85, and it's taking information and passing its inverse. In practice, I don't know what that looks like; I'd think that it still provides the same quantity of information, but it's about scaling and what gets wiped out, so... I don't know.
 - **(d) if the answer should have been `1.7` —** *(too high or too low, and how you know)*
 If I'm reading this right, we predict 0.85, find that it's 0.85 away from our target (1.7-0.85), and increase our weight by learning rate * error.
 
