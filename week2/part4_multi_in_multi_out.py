@@ -18,7 +18,7 @@ def w_sum(input, weight):
     assert len(input) == len(weight)
     output = 0
     for i in range(len(input)):
-        output += input[i] + weight[i]
+        output += input[i] * weight[i]
     return output
 
 
