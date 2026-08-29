@@ -14,6 +14,8 @@ input = [blade_angle[0], balance[0], breath[0]]
 # Expected for sensing 0 (rounded): [0.555, 0.98, 0.965]
 
 
+# temporary; once part 2 is merged into the week branch
+# I will merge the week branch into this branch and uncomment line 1
 def w_sum(input, weight):
     assert len(input) == len(weight)
     output = 0
@@ -22,21 +24,16 @@ def w_sum(input, weight):
     return output
 
 
+# One-line list-comprehension scratch version
 def vect_mat_mul(vect, matrix):
     """Takes a vector of inputs, and uses the weighted
     sum of that vector and each row of the matrix for
     a list of outputs."""
-    output = [0] * len(matrix)
-    for i in range(len(matrix)):
-        output[i] = w_sum(vect, matrix[i])
-    return output
-    # return [w_sum(vect, row) for row in matrix]
+    return [w_sum(vect, row) for row in matrix]
 
 
 # Run on all four sparring sensings
 print("-- From scratch --")
-bruh = [8.5, 0.65, 1.2]
-print(vect_mat_mul(bruh, weights))
 print(vect_mat_mul(input, weights))
 for i in [1, 2, 3]:
     input = [blade_angle[i], balance[i], breath[i]]
@@ -46,6 +43,7 @@ for i in [1, 2, 3]:
 import numpy as np
 
 # NumPy understanding verification
+# Convert everything to np.array
 np_weights = np.asarray(weights)
 np_ba = np.asarray(blade_angle)
 np_bal = np.asarray(balance)
@@ -54,16 +52,19 @@ np_in = np.array([np_ba[0], np_bal[0], np_bre[0]])
 
 print()
 print("-- NumPy version --")
+print("Understanding Shapes...")
 print(f"Shape of any row of inputs: {np_in.shape}")
 print(f"Shape of weight matrix: {np_weights.shape}")
 print(f"Shape of weight matrix transposed: {np_weights.T.shape}")
 
 
+# One-line NumPy version
 def np_vmm(input, weights):
     return input.dot(weights.T)
 
 
 print()
+print("Vector Matrix Multiplication with NumPy...")
 print(np_vmm(np_in, np_weights))
 for i in [1, 2, 3]:
     np_in = np.array([np_ba[i], np_bal[i], np_bre[i]])
@@ -80,9 +81,8 @@ for i in range(len(blade_angle)):
     print(f"Input: {input}")
     print(f"Scratch output: {scratch_output}")
     print(f"NumPy output: {np_output}")
-    print(f"Close enough? {'yes' if np.allclose(
-              scratch_output, 
-              np_output, 
-              rtol=1e-9, 
-              atol=1e-9
-              ) else 'no'}")
+    print(f"Close enough? {'yes' if np.allclose(scratch_output, 
+                                                np_output, 
+                                                rtol=1e-9, 
+                                                atol=1e-9
+                                               ) else 'no'}")
