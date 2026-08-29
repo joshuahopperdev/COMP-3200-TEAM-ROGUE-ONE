@@ -1,4 +1,4 @@
-# from part2_multiple_inputs import w_sum
+from part2_multiple_inputs import w_sum
 
 weights = [
     # angle balance breath
@@ -14,22 +14,12 @@ input = [blade_angle[0], balance[0], breath[0]]
 # Expected for sensing 0 (rounded): [0.555, 0.98, 0.965]
 
 
-# temporary; once part 2 is merged into the week branch
-# I will merge the week branch into this branch and uncomment line 1
-def w_sum(input, weight):
-    assert len(input) == len(weight)
-    output = 0
-    for i in range(len(input)):
-        output += input[i] * weight[i]
-    return output
-
-
 # One-line list-comprehension scratch version
 def vect_mat_mul(vect, matrix):
     """Takes a vector of inputs, and uses the weighted
     sum of that vector and each row of the matrix for
     a list of outputs."""
-    return [w_sum(vect, row) for row in matrix]
+    return [w_sum(vect, row, debug=False) for row in matrix]
 
 
 # Run on all four sparring sensings
