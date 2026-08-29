@@ -13,6 +13,7 @@ def w_sum(a, b, debug = False):
     This function takes two inputs, makes sure they are same length, and returns their weighted sum.
     """
     output = 0
+    assert len(a) == len(b)
     if len(a) == len(b):
         for i in range(len(a)):
             output += a[i] * b[i]
@@ -49,3 +50,15 @@ print(pred)
 # Output: 0.9800000000000001      Length: 3
 # Numpy output
 # 0.9800000000000001
+
+print("Complete Comparison")
+b = np.array(weights)
+for i in range(len(blade_angle)):
+    input = [blade_angle[i], balance[i], breath[i]]
+    print("----From Scratch----")
+    neural_network(input, weights, True)
+    a = np.array(input)
+    pred = a.dot(b)
+    print("----By Numpy----")
+    print(f"Output: {pred}\tLength: {len(a)}")
+
