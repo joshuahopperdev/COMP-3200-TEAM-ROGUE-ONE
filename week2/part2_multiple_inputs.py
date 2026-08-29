@@ -31,34 +31,40 @@ def neural_network(input, weights, debug = False):
     pred = w_sum(input, weights, debug)
     return pred
 
-neural_network(input, weights, debug=True)
+def main():
+    neural_network(input, weights, debug=True)
 
-# Next iteration would be to just loop through the whole set of inputs, not just the first.
+    # Next iteration would be to just loop through the whole set of inputs, not just the first.
 
-# --- Numpy version ---
-# Acquire the magic of numpy
-import numpy as np
-# Convert our two arrays into numpy arrays.
-a = np.array(input)
-b = np.array(weights)
-# Perform the dot product
-pred = a.dot(b)
-# Show off the prediction for comparison
-print(pred)
-
-# First output
-# Output: 0.9800000000000001      Length: 3
-# Numpy output
-# 0.9800000000000001
-
-print("Complete Comparison")
-b = np.array(weights)
-for i in range(len(blade_angle)):
-    input = [blade_angle[i], balance[i], breath[i]]
-    print("----From Scratch----")
-    neural_network(input, weights, True)
+    # --- Numpy version ---
+    # Acquire the magic of numpy
+    import numpy as np
+    # Convert our two arrays into numpy arrays.
     a = np.array(input)
+    b = np.array(weights)
+    # Perform the dot product
     pred = a.dot(b)
-    print("----By Numpy----")
-    print(f"Output: {pred}\tLength: {len(a)}")
+    # Show off the prediction for comparison
+    print(pred)
+
+    # First output
+    # Output: 0.9800000000000001      Length: 3
+    # Numpy output
+    # 0.9800000000000001
+
+    print("Complete Comparison")
+    b = np.array(weights)
+    for i in range(len(blade_angle)):
+        input = [blade_angle[i], balance[i], breath[i]]
+        print("----From Scratch----")
+        neural_network(input, weights, True)
+        a = np.array(input)
+        pred = a.dot(b)
+        print("----By Numpy----")
+        print(f"Output: {pred}\tLength: {len(a)}")
+
+
+if __name__ == "__main__":
+    main()
+
 
