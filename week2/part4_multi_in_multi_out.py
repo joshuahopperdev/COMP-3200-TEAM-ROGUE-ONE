@@ -13,6 +13,11 @@ breath = [1.2, 1.3, 0.5, 1.0]  # exhalations per second
 input = [blade_angle[0], balance[0], breath[0]]
 # Expected for sensing 0 (rounded): [0.555, 0.98, 0.965]
 
+# Bundle each sensing
+# [blade_angle[a], balance[a], breath[a]]
+# together in an array of sensings
+sensings = list(zip(blade_angle, balance, breath))
+
 
 # One-line list-comprehension scratch version
 def vect_mat_mul(vect, matrix):
@@ -22,57 +27,75 @@ def vect_mat_mul(vect, matrix):
     return [w_sum(vect, row, debug=False) for row in matrix]
 
 
-# Run on all four sparring sensings
-print("-- From scratch --")
-print(vect_mat_mul(input, weights))
-for i in [1, 2, 3]:
-    input = [blade_angle[i], balance[i], breath[i]]
-    print(vect_mat_mul(input, weights))
+# There should be four sparring sensings
+def scratch_nn(debug=False):
+    """Runs our scratch implementation of multi-in,
+    multi-out neural network on all four sensings"""
+    print("-- From scratch --")
+    if debug:
+        print(f"There are {len(sensings)} sensings: {sensings}")
+    outputs = [0] * len(sensings)
+    for i in range(len(sensings)):
+        outputs[i] = vect_mat_mul(sensings[i], weights)
+        print(outputs[i])
+    return outputs
+
+
+# Preconditions: input and weights are NumPy arrays
+# and the numpy module is imported
+def understand_np_shapes(input, weights):
+    """Prints and explains the shapes of a sensing
+    (row of input) and the weight matrix"""
+    print()
+    print("-- NumPy version --")
+    print("Understanding Shapes...")
+    print(f"Shape of any row of inputs: {input.shape}")
+    print(f"Shape of weight matrix: {weights.shape}")
+    print(
+        "A shape of (3,) means that the array is one-dimensional and has three elements."
+    )
+    print(
+        "A shape of (3,3) means that we have a square matrix with three rows and three columns, or elements in each row."
+    )
+
 
 # -- NumPy version --
-import numpy as np
-
-# NumPy understanding verification
-# Convert everything to np.array
-np_weights = np.asarray(weights)
-np_ba = np.asarray(blade_angle)
-np_bal = np.asarray(balance)
-np_bre = np.asarray(breath)
-np_in = np.array([np_ba[0], np_bal[0], np_bre[0]])
-
-print()
-print("-- NumPy version --")
-print("Understanding Shapes...")
-print(f"Shape of any row of inputs: {np_in.shape}")
-print(f"Shape of weight matrix: {np_weights.shape}")
-print(f"Shape of weight matrix transposed: {np_weights.T.shape}")
 
 
-# One-line NumPy version
-def np_vmm(input, weights):
-    return input.dot(weights.T)
+# Precondition: numpy is imported
+def np_nn(inputs, weights):
+    print()
+    print("Vector Matrix Multiplication with NumPy...")
+    outputs = [0] * len(inputs)
+    for i in range(len(inputs)):
+        outputs[i] = inputs[i].dot(weights.T)
+        print(outputs[i])
+    return outputs
 
 
-print()
-print("Vector Matrix Multiplication with NumPy...")
-print(np_vmm(np_in, np_weights))
-for i in [1, 2, 3]:
-    np_in = np.array([np_ba[i], np_bal[i], np_bre[i]])
-    print(np_vmm(np_in, np_weights))
+def main():
+    # Get scratch results
+    scratch_outputs = scratch_nn(debug=True)
 
-# Comparing scratch vs numpy
-print()
-print("-- Comparing scratch vector matrix multiplication vs NumPy's version --")
-for i in range(len(blade_angle)):
-    input = [blade_angle[i], balance[i], breath[i]]
-    np_input = np.array([blade_angle[i], balance[i], breath[i]])
-    scratch_output = np.asarray(vect_mat_mul(input, weights))
-    np_output = np_vmm(np_input, np_weights)
-    print(f"Input: {input}")
-    print(f"Scratch output: {scratch_output}")
-    print(f"NumPy output: {np_output}")
-    print(f"Close enough? {'yes' if np.allclose(scratch_output, 
-                                                np_output, 
-                                                rtol=1e-9, 
-                                                atol=1e-9
-                                               ) else 'no'}")
+    # -- NumPy version --
+    import numpy as np
+
+    # Convert inputs and weights to NumPy arrays
+    np_weights = np.asarray(weights)
+    np_sensings = np.asarray(sensings)
+
+    # Print and explain shapes
+    understand_np_shapes(np_sensings[0], np_weights)
+
+    # Get NumPy results
+    np_outputs = np_nn(np_sensings, np_weights)
+
+    # Compare outputs for closeness
+    for i in range(len(scratch_outputs)):
+        print(
+            f"Sensing {i}: {'close enough' if np.allclose(scratch_outputs[i], np_outputs[i], rtol=1e-9, atol=1e-9) else 'not close enough'}"
+        )
+
+
+if __name__ == "__main__":
+    main()
