@@ -1,13 +1,3 @@
-weights = [0.1, 0.2, 0.0] # angle, balance, breath
-
-# Copied from the slides
-blade_angle = [8.5, 9.5, 9.9, 9.0] 
-balance = [0.65, 0.80, 0.80, 0.90]
-breath = [1.2, 1.3, 0.5, 1.0]
-
-# Build the input vector for sensing 0
-input = [blade_angle[0], balance[0], breath[0]]
-
 def w_sum(a, b, debug = False):
     """
     This function takes two inputs, makes sure they are same length, and returns their weighted sum.
@@ -32,6 +22,16 @@ def neural_network(input, weights, debug = False):
     return pred
 
 def main():
+    weights = [0.1, 0.2, 0.0] # angle, balance, breath
+
+    # Copied from the slides
+    blade_angle = [8.5, 9.5, 9.9, 9.0] 
+    balance = [0.65, 0.80, 0.80, 0.90]
+    breath = [1.2, 1.3, 0.5, 1.0]
+
+    # Build the input vector for sensing 0
+    input = [blade_angle[0], balance[0], breath[0]]
+
     neural_network(input, weights, debug=True)
 
     # Next iteration would be to just loop through the whole set of inputs, not just the first.
