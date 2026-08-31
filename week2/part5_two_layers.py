@@ -1,4 +1,6 @@
 import numpy as np
+from part4_multi_in_multi_out import vect_mat_mul
+
 
 # angle balance breath
 ih_wgt = [[0.1, 0.2, -0.1], # -> hid[0]
@@ -11,39 +13,39 @@ hp_wgt = [[0.3, 1.1, -0.3], # -> opens_left?
 [0.0, 1.3, 0.1]] # -> feints?
 
 
-## a bunch of little attempts to replicate stuff myself; 
-# this way I understand what it's doing when I use others' code
-# elementwise multiply each value in 2 equal-length vectors, then sum
-def dot_prod(vec1, vec2):
-    # check they're the same length
-    assert len(vec1) == len(vec2)
-    # start at sum = 0
-    output = 0
-    # sequentially add the element-wise products of the vectors' values
-    for i in range(len(vec1)):
-        output += vec1[i] * vec2[i]
-
-    return output
-
-def matrix_vect_mult(matrix, vector):
-    # verify that we're multiplying an m x n matrix by an n x 1 vector
-    # by checking that the second dimension of the first row of the matrix
-    # is equal to the height of the vector (which we presume to be a vector)
-    # assumes the matrix is rectangular, that is, same width at all points
-    assert len(matrix[0]) == len(vector)
-
-    # generate output vector of 0s, as long as the height of the matrix
-    # final result of multiplying m x n matrix by n x 1 vector is m x 1 vector
-    output = [0]*len(matrix)
-
-    # see above re: length
-    for i in range(len(matrix)):
-        # the i'th value of the vector should be equal to
-        # the dot product of the entire vector with the i'th row
-        # of the matrix.
-        output[i] = dot_prod(matrix[i], vector)
-
-    return output
+### a bunch of little attempts to replicate stuff myself; 
+## this way I understand what it's doing when I use others' code
+## elementwise multiply each value in 2 equal-length vectors, then sum
+#def dot_prod(vec1, vec2):
+#    # check they're the same length
+#    assert len(vec1) == len(vec2)
+#    # start at sum = 0
+#    output = 0
+#    # sequentially add the element-wise products of the vectors' values
+#    for i in range(len(vec1)):
+#        output += vec1[i] * vec2[i]
+#
+#    return output
+#
+#def matrix_vect_mult(matrix, vector):
+#    # verify that we're multiplying an m x n matrix by an n x 1 vector
+#    # by checking that the second dimension of the first row of the matrix
+#    # is equal to the height of the vector (which we presume to be a vector)
+#    # assumes the matrix is rectangular, that is, same width at all points
+#    assert len(matrix[0]) == len(vector)
+#
+#    # generate output vector of 0s, as long as the height of the matrix
+#    # final result of multiplying m x n matrix by n x 1 vector is m x 1 vector
+#    output = [0]*len(matrix)
+#
+#    # see above re: length
+#    for i in range(len(matrix)):
+#        # the i'th value of the vector should be equal to
+#        # the dot product of the entire vector with the i'th row
+#        # of the matrix.
+#        output[i] = dot_prod(matrix[i], vector)
+#
+#    return output
 
 
 
@@ -56,7 +58,7 @@ def neural_network(weights_sequence, input):
     #sequentially multiply starting values by the matrix of the weights
     #in each layer, proceeding to the next one
     for i in range(len(weights_sequence)):
-        cur = matrix_vect_mult(weights_sequence[i], cur)
+        cur = vect_mat_mul(cur, weights_sequence[i])
         stored_layers[i] = cur
 
     return stored_layers
