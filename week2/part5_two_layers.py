@@ -63,17 +63,24 @@ def neural_network(weights_sequence, input):
 
     return stored_layers
 
-weights = [ih_wgt, hp_wgt]
-blade_angle = [8.5, 9.5, 9.9, 9.0] # degrees off-vertical
-balance = [0.65, 0.80, 0.80, 0.90] # balance reading
-breath = [1.2, 1.3, 0.5, 1.0] # exhalations per second
 
-# trust that there are the same number of entries
-for i in range(len(blade_angle)):
-    input = [blade_angle[i], balance[i], breath[i]]
-    pred=neural_network(weights, input)
-    for j in range(len(pred)):
-        print(f"Sensing {i}, Layer {j+1}: {pred[j]}")
+def main():
+    weights = [ih_wgt, hp_wgt]
+    blade_angle = [8.5, 9.5, 9.9, 9.0] # degrees off-vertical
+    balance = [0.65, 0.80, 0.80, 0.90] # balance reading
+    breath = [1.2, 1.3, 0.5, 1.0] # exhalations per second
 
-# Expected for sensing 0 (rounded): hidden = [0.86, 0.295, 1.23]
-# pred = [0.2135, 0.145, 0.5065]
+    # trust that there are the same number of entries
+    for i in range(len(blade_angle)):
+        input = [blade_angle[i], balance[i], breath[i]]
+        pred=neural_network(weights, input)
+        for j in range(len(pred)):
+            print(f"Sensing {i}, Layer {j+1}: {pred[j]}")
+
+    # Expected for sensing 0 (rounded): hidden = [0.86, 0.295, 1.23]
+    # pred = [0.2135, 0.145, 0.5065]
+
+
+
+if __name__ == "__main__":
+    main()
