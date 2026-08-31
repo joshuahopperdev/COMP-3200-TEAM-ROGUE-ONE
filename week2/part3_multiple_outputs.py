@@ -15,13 +15,25 @@ def neural_network(input, weights):
     pred = ele_mul(input, weights)
     return pred
 
+print("FROM-SCRATCH VERSION") 
+print("--------------------") 
+for input in balance:
+    pred = neural_network(input, weights)
+    print(f"Balance: {input} -> Predictions: {pred}")
+
 # -- NumPy version --
 import numpy as np
 
 def neural_network_numpy(input, weights):
-    input = np.array(input)
-    weights = np.array(weights)
+    input = np.asarray(input)
+    weights = np.asarray(weights)
 
     # np auto multiplies scalars by every element in array
     pred = input * weights
     return pred
+
+print("\nNUMPY VERSION") 
+print("------------") 
+for input in balance:
+    pred = neural_network_numpy(input, weights)
+    print(f"Balance: {input} -> Predictions: {pred}")
