@@ -1,5 +1,6 @@
 import numpy as np
 from part4_multi_in_multi_out import vect_mat_mul
+from part4_multi_in_multi_out import np_nn
 
 
 # angle balance breath
@@ -57,6 +58,8 @@ def neural_network(weights_sequence, input):
     stored_layers = [0]*len(weights_sequence)
     #sequentially multiply starting values by the matrix of the weights
     #in each layer, proceeding to the next one
+
+    
     for i in range(len(weights_sequence)):
         cur = vect_mat_mul(cur, weights_sequence[i])
         stored_layers[i] = cur
@@ -79,6 +82,29 @@ def main():
 
     # Expected for sensing 0 (rounded): hidden = [0.86, 0.295, 1.23]
     # pred = [0.2135, 0.145, 0.5065]
+
+    print("Each hidden value is an intermediate stage, something that may or may not"
+    " correspond to something we understand, storing some amount of information in some way."
+    " But to not all collapse into one layer of summed linear transformations, we need"
+    " something nonlinear (and non-polynomial!), applied to all these to mess with"
+    " them such that you can get odd behavior.")
+
+    #wait, why are we doing this with np.dot? This seems a little more manual than necessary.
+    print("--Numpy Version--")
+    np_weights = np.asarray(weights)
+    np_sensings = np.asarray(list(zip(blade_angle, balance, breath)))
+
+
+    print(f"{np_weights.shape} - a 2 x 3 x 3 vector, it contains 2 layers of 3 vectors of the 3 weights of that neuron.")
+    print(f"{np_sensings.shape} - a 4 x 3 vector, it contains 4 sensings, each containing a vector made of the 3 variables blad_angle, balance and breath")
+    for i in range(len(np_sensings)):
+        input = [np_sensings[i]]
+
+        np_hidden_layer = np_nn(input, np_weights[0])
+        np_final_layer = np_nn(np_hidden_layer, np_weights[1])
+
+
+
 
 
 
