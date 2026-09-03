@@ -88,15 +88,10 @@ def np_gradient_descent(input, goal, weight, iterations, err_stop_early = 0.001,
     return result
 
 def compare_np_scratch(scratch_return, np_return):
-    if len(scratch_return) == len(np_return):
-        for i in range(0,len(scratch_return)):
-            if scratch_return[i] != np_return[i]:
-                print("From Scratch and Numpy Example are not equal.")
-                print(f"Iter: {i+1}\t Scratch: {scratch_return[i]}\tNumpy: {np_return[i]}")
-                return
+    if np.allclose(scratch_return,np_return, 1e-9):
         print("From Scratch and Numpy Example are equal.")
     else:
-        print("From Scratch and Numpy Example are not equal. Wrong array lengths.")
+        print("From Scratch and Numpy Example are not equal.")
 
 
 """
