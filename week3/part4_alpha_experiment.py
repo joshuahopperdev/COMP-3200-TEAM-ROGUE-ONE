@@ -62,7 +62,7 @@ if __name__ == '__main__':
         # save this run's alpha, final error, did_error_improve, and error_ratio
         results[i] = [alphas_list[i], errors[-1], did_error_improve(errors), error_ratio(errors)]
         # print 'em all out!
-        print(f"Test {i+1}n  Alpha: {results[i][0]}\n  Final Error: {results[i][1]}\n  Did Error Improve: {results[i][2]}\n  Ratio of Final Error to Initial Error: {results[i][3]}")
+        print(f"Test {i+1}\n  Alpha: {results[i][0]}\n  Final Error: {results[i][1]}\n  Did Error Improve: {results[i][2]}\n  Ratio of Final Error to Initial Error: {results[i][3]}")
 
 
 # At alpha = 0.5, the weight updates by exactly twice the perfect amount, bringing it to an equal distance from the goal; the next update will bring
