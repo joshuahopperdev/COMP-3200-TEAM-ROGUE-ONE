@@ -1,4 +1,4 @@
-
+from part3_alpha import gradient_descent_alpha
 
  
 
@@ -29,7 +29,7 @@ def did_error_improve(errors):
     probably only relevant in toy cases where you can get it
     exactly on the boundary.
     """
-    return errors[-1] > 0.98 * errors[0]
+    return errors[-1] < 0.98 * errors[0]
 
 
 def error_ratio(errors):
@@ -50,3 +50,13 @@ def error_ratio(errors):
 
 
 
+
+if __name__ == '__main__': 
+    alphas_list = [.001, .01, .1, 0.45, 0.5, 0.55, 1.0]
+    # for each result we will store a set of four values: 
+    # the alpha, the final error, true/false did_error_improve, and error_ratio
+    results = [0, 0, 0, 0]*len(alphas_list)
+    for i in range(len(alphas_list)):
+        errors = gradient_descent_alpha(input = 2.0, goal = 0.8, weight = 0.5, alpha = alphas_list[i], iterations = 20)
+        results[i] = [alphas_list[i], errors[-1], did_error_improve(errors), error_ratio(errors)]
+        print(f"Test {i+1}:\n  Alpha: {results[i][0]}\n  Final Error: {results[i][1]}\n  Did Error Imrpove: {results[i][2]}\n  Ratio of Final Error to Initial Error: {results[i][3]}")
