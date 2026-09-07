@@ -49,3 +49,36 @@ def gradient_descent(sensing, goal, weight, iterations):
     weight -= (sensing * weight - goal) * sensing
   return errors
 ```
+
+## Part 3 -- Breaking, then Fixing with α -- Oliver Pham
+
+This part demonstrates how Part 2 fails, then explains the fix. The learning rate (a.k.a., alpha...the fix) looks fairly simple in code, and it does wonders for gradient descent's fragility.
+
+### What was done
+
+- A reinvention of `gradient_descent` but with an alpha value in the weight update line
+- A NumPy version similar to Part 2's NumPy version; once again, the outputs were the same
+
+```py
+def gradient_descent_alpha(sensing, goal, weight, alpha, iterations):
+  errors = [0] * iterations
+  for i in range(iterations):
+    errors[i] = (sensing * weight - goal) ** 2
+    weight -= (sensing * weight - goal) * sensing * alpha # the critical arrival of our alpha fix
+  return errors
+```
+
+## Part 4: α Experimentation -- Nathanael Williams
+
+A simple experiment with various kinds of `alpha`s in search of the best for gradient descent. It turns out that 0.5 was the best alpha for this assignment's dataset.
+
+## Part 5: Testing -- Caleb Hopper
+
+This ensured that all our code worked properly; it includes 15 `assert` statements testing all important functions from each file.
+
+# Role Swap
+- Repo Lead: Caleb Hopper (no change)
+- Standup Lead: Oliver Pham
+- Integration Tester: Caleb Hopper
+- Review Coordinator: Nathanael Williams
+- Documentation Lead: Josiah Duvalian
