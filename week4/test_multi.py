@@ -1,0 +1,3 @@
+from part1b_rescaled import normalize
+from part1_multi_input import gradient_descent_multi
+from part3_multi_in_out import outer_prod
