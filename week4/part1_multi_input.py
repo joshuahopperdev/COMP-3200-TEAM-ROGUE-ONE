@@ -17,12 +17,15 @@ def gradient_descent_multi(input, weights, true, alpha, iterations, debug = Fals
     """
     Gradient descent with multiple weights.
     """
+    error_result = []
+    weight_hist_result = []
     for iter in range(0, iterations):
         # Predict
         pred = w_sum(input, weights)
 
         # Compare and get error
         error = (pred - true) ** 2
+        error_result.append(error)
         delta = pred - true
 
         # Learn
@@ -30,16 +33,19 @@ def gradient_descent_multi(input, weights, true, alpha, iterations, debug = Fals
 
         for i in range(len(weight_deltas)):
             weights[i] -= alpha * weight_deltas[i]
+        weight_hist_result.append(weights)
 
         if debug:
             print(f"Iter: {iter+1}\tPred: {pred}\tError: {error:.6f}\tWeights: {weights}")
 
-    return weights
+    return weights, error_result, weight_hist_result
 
 def gradient_descent_multi_numpy(input, weights, true, alpha, iterations, debug = False):
     """
     Gradient descent with multiple weights, numpy version.
     """
+    np_error_result = []
+    np_weight_hist_result = []
     np_input = np.array(input)
     np_weights = np.array(weights)
 
@@ -50,17 +56,19 @@ def gradient_descent_multi_numpy(input, weights, true, alpha, iterations, debug 
 
         # Compare and get error
         error = (pred - true) ** 2
+        np_error_result.append(error)
         deltas = pred - true
 
         # Learn
         # print((alpha * np.outer(deltas,input)).shape) (1,3)
         # print(np_weights.shape) (3,)
         np_weights -= alpha * deltas * np_input
+        np_weight_hist_result.append(np_weights)
 
         if debug:
             print(f"Iter: {iter+1}\tPred: {pred}\tError: {error:.6f}\tWeights: {np_weights}")
 
-    return np_weights
+    return np_weights, np_error_result, np_weight_hist_result
 
 
 def main():
@@ -78,14 +86,14 @@ def main():
     weights = [0.1, 0.2, -0.1]
     true = 1
     alpha = 0.01
-    weights = gradient_descent_multi(input, weights, true, alpha, 4, debug = True)
+    weights, _, _ = gradient_descent_multi(input, weights, true, alpha, 4, debug = True)
     # It really doesn't improve much after 4 iterations. 10 is overkill. 
     # If our alpha was smaller maybe it would be useful.
     
     np_weights = np.array([0.1, 0.2, -0.1])
     true = 1
     alpha = 0.01
-    np_weights = gradient_descent_multi_numpy(input, np_weights, true, alpha, 4, debug = True)
+    np_weights, _, _ = gradient_descent_multi_numpy(input, np_weights, true, alpha, 4, debug = True)
 
     if np.allclose(weights, np_weights, 1e-9):
         print("From Scratch and Numpy Example are equal.")
