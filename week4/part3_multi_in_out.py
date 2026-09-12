@@ -1,6 +1,6 @@
 
 from helpers import vect_mat_mul
-
+import copy
 
 # Takes two vectors, a and b, and outputs a matrix.
 # The matrix has len(a) rows and len(b) columns.
@@ -20,7 +20,7 @@ def gradient_descent_full(input, weights, trues, alpha, iterations):
     cur_weights = weights
 
     weights_history = [[[0]*len(weights[0]) for _ in range(len(weights))] for _ in range(iterations+1)]
-    weights_history[0] = weights
+    weights_history[0] = copy.deepcopy(weights)
 
     error_history = [0]*iterations
     for iter in range(iterations):
@@ -43,7 +43,8 @@ def gradient_descent_full(input, weights, trues, alpha, iterations):
         for i in range(len(cur_weights)):
             for j in range(len(cur_weights[0])):
                 cur_weights[i][j] -= alpha*weight_deltas[i][j]
-        weights_history[iter+1] = cur_weights
+
+        weights_history[iter+1] = copy.deepcopy(cur_weights)
 
     return cur_weights, error_history, weights_history
 
