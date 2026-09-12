@@ -1,4 +1,5 @@
 from helpers import w_sum, vect_mat_mul
+import numpy as np
 
 def ele_mul(scalar, vector, debug = False):
     """
@@ -16,7 +17,7 @@ def gradient_descent_multi(input, weights, true, alpha, iterations, debug = Fals
     """
     Gradient descent with multiple weights.
     """
-    for iter in range(1, iterations):
+    for iter in range(0, iterations):
         # Predict
         pred = w_sum(input, weights)
 
@@ -31,9 +32,35 @@ def gradient_descent_multi(input, weights, true, alpha, iterations, debug = Fals
             weights[i] -= alpha * weight_deltas[i]
 
         if debug:
-            print(f"Iter: {i}\tPred: {pred}\tError: {error:.6f}")
+            print(f"Iter: {iter+1}\tPred: {pred}\tError: {error:.6f}\tWeights: {weights}")
 
     return weights
+
+def gradient_descent_multi_numpy(input, weights, true, alpha, iterations, debug = False):
+    """
+    Gradient descent with multiple weights, numpy version.
+    """
+    np_input = np.array(input)
+    np_weights = np.array(weights)
+
+    for iter in range(0,iterations):
+
+        # Predict
+        pred = np_input.dot(np_weights.T)
+
+        # Compare and get error
+        error = (pred - true) ** 2
+        deltas = pred - true
+
+        # Learn
+        # print((alpha * np.outer(deltas,input)).shape) (1,3)
+        # print(np_weights.shape) (3,)
+        np_weights -= alpha * deltas * np_input
+
+        if debug:
+            print(f"Iter: {iter+1}\tPred: {pred}\tError: {error:.6f}\tWeights: {np_weights}")
+
+    return np_weights
 
 
 def main():
@@ -52,7 +79,24 @@ def main():
     true = 1
     alpha = 0.01
     weights = gradient_descent_multi(input, weights, true, alpha, 4, debug = True)
+    # It really doesn't improve much after 4 iterations. 10 is overkill. 
+    # If our alpha was smaller maybe it would be useful.
     
+    np_weights = np.array([0.1, 0.2, -0.1])
+    true = 1
+    alpha = 0.01
+    np_weights = gradient_descent_multi_numpy(input, np_weights, true, alpha, 4, debug = True)
+
+    if np.allclose(weights, np_weights, 1e-9):
+        print("From Scratch and Numpy Example are equal.")
+    else:
+        print("From Scratch and Numpy Example are not equal.")
+
+    # As for which weights changed the most. Probably the first one? None of the weights seemed
+    # to have changed very drastically. The first one just happened to have a change of 0.01 where
+    # the others changed 0.001 or 0.003. Overall the values changed very little.
+
+
 
 if __name__ == "__main__":
     main()
