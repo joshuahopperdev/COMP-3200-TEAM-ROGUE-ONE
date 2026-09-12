@@ -80,14 +80,53 @@ def gradient_descent_full(input, weights, trues, alpha, iterations):
     return cur_weights, error_history, weights_history
 
 
+def grad_desc_numpy_full(input, weights, trues, alpha, iterations):
+    cur_weights = np.array(weights)
+    np_trues = np.array(trues)
+    np_input = np.array(input)
+    weights_history = np.empty((iterations+1, *cur_weights.shape))
+    error_history = np.empty(iterations+1)
+    for iter in range(iterations):
+        # save weights before modification; so we'll need to do it one more time at the end
+        weights_history[iter] = cur_weights
+
+        preds = cur_weights@np_input
+        deltas = preds - np_trues
+        mse = np.mean(deltas**2)
+        # same deal, save error before modification
+        error_history[iter] = mse
+
+        weight_deltas = np.outer(deltas, np_input)
+
+        cur_weights -= alpha * weight_deltas
+
+
+    # save final weights
+    weights_history[-1] = cur_weights
+    # one last pass to find final error, then save it
+    error_history[-1]=np.mean(((cur_weights@np_input)-np_trues)**2)
+
+    return cur_weights, error_history, weights_history
+    
 
 def main():
     final_weights, errors, weights_history = gradient_descent_full(input = [8.5, 0.65, 1.2], weights = [[0.1, 0.1, -0.3], [0.1, 0.2, 0.0], [0.0, 1.3, 0.1]], 
         trues = [0.0, 1.0, 0.1], alpha = 0.01, iterations = 15)
-    print(final_weights)
-    print(errors)
-    #print(weights_history)
+
+    # –- NumPy version –-   
+    np_weights, np_errors, np_weight_history = grad_desc_numpy_full(input = [8.5, 0.65, 1.2], weights = [[0.1, 0.1, -0.3], [0.1, 0.2, 0.0], [0.0, 1.3, 0.1]], 
+        trues = [0.0, 1.0, 0.1], alpha = 0.01, iterations = 15)
+
+    if (np.allclose(np.array(final_weights), np_weights)):
+        print("Numpy version and from scratch version agree on final weights!")
+    if (np.allclose(np.array(errors), np_errors)):
+        print("Numpy version and from scratch version agree on error history!")
+    if (np.allclose(np.array(weights_history), np_weight_history)):
+        print("Numpy version and from scratch version agree on weight history!")
     
+
+     
+
 
 
 if __name__ == "__main__":
