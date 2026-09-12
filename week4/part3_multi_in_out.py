@@ -131,3 +131,24 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+# Final weights are roughly:
+# [[0.0363, 0.0951, -0.3090], 
+#  [0.1023, 0.2002, 0.0003], 
+#  [-0.0992, 1.2924, 0.0860]]
+# From a starting point of:
+# [[0.1, 0.1, -0.3], 
+#  [0.1, 0.2, 0.0], 
+#  [0.0, 1.3, 0.1]]
+# With input of:
+# [8.5, 0.65, 1.2]
+# And trues of:
+# [0.0, 1.0, 0.1]
+# Due to its large input value, around 10 times the other two inputs,
+# column 1 shifted substantially, while the others stayed the same.
+# But strikes_high started out predicting 0.98, almost exactly
+# at the true value, so it barely updated at all - and that's a good
+# thing! If you're already there, and nobody else is anywhere close, 
+# it's good for you to stay put!
