@@ -1,6 +1,7 @@
 
 from helpers import vect_mat_mul
 import copy
+import numpy as np
 
 # Takes two vectors, a and b, and outputs a matrix.
 # The matrix has len(a) rows and len(b) columns.
@@ -48,8 +49,13 @@ def gradient_descent_full(input, weights, trues, alpha, iterations):
 
     return cur_weights, error_history, weights_history
 
+def main():
+    final_weights, errors, weights_history = gradient_descent_full(input = [8.5, 0.65, 1.2], weights = [[0.1, 0.1, -0.3], [0.1, 0.2, 0.0], [0.0, 1.3, 0.1]], 
+        trues = [0.0, 1.0, 0.1], alpha = 0.01, iterations = 15)
+    print(final_weights)
+    print(errors)
+    #print(weights_history)
 
-final_weights, errors, weights_history = gradient_descent_full([1, 2, 3], [[1, 2, 2], [3, 1, 4], [2, 2, 2]], [1, 2, 3], 0.1, 5)
-print(final_weights)
-print(errors)
-print(weights_history)
+
+if __name__ == "__main__":
+    main()
