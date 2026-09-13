@@ -13,6 +13,18 @@ def ele_mul(scalar, vector, debug = False):
 
     return output
 
+def normalize(channel):
+    """
+    This function retuns an array normalized by the largest value in the array.
+    This function assumes that the array passed in is numeric in value.
+    """
+    max_value = max(channel)
+    result_array = []
+    for i in channel:
+        result_array.append(i/max_value)
+
+    return result_array
+
 def gradient_descent_multi(input, weights, true, alpha, iterations, debug = False):
     """
     Gradient descent with multiple weights.
@@ -75,7 +87,7 @@ def main():
     """
     Main function for testing functions.
     """
-
+    print("\n------ Week 4 - Part 1 ------\n")
     # Example from class
     delta = -0.14
     input = [8.5, 0.65, 1.2]
@@ -105,6 +117,40 @@ def main():
     # the others changed 0.001 or 0.003. Overall the values changed very little.
 
 
+    print("\n------ Week 4 - Part 1b ------\n")
+    input = [8.5, 0.65, 1.2]
+    weights = [0.1, 0.2, -0.1]
+    true = 1
+    alpha = 0.01
+    print(f"Raw with alpha {alpha}")
+    weights, _, _ = gradient_descent_multi(input, weights, true, alpha, 4, debug = True)
+    # normalize(input)
+    input = [8.5, 0.65, 1.2]
+    weights = [0.1, 0.2, -0.1]
+    true = 1
+    alpha = 0.2
+    print(f"Scaled with alpha {alpha}")
+    new_input = normalize(input)
+    weights, _, _ = gradient_descent_multi(new_input, weights, true, alpha, 20, debug = True)
+
+    # Of note here, the 0.1 after 20 iterations doesn't get near the same error and pred as having a smaller
+    # learning rate and larger inputs. In the real world I would still go for normalizing the inputs regardless.
+    # But in this scenario, having a smaller learning rate works just fine. Largely because of the giant difference
+    # in input value size.
+
+    # Part 1b.5.a
+    # The input stays the same, the weight changes. So if the input just happens to be above 1, and the weight 
+    # started out above 1 as well, this number will have no way of decreasing and will go into infinity.
+    
+    # Part 1b.5.b
+    # I unintentially answered this above before the questions. But I believe it has to do with how big the input
+    # difference is that when normalized, the smaller inputs are made into much smaller decimals which don't account
+    # the same as having 1 decimal point higher alpha value. When we move it near 0.2 or 0.25 over 0.01, then we
+    # wee a much faster error reduction speed after 20 iterations.
+
+    # Part 1b.5.c
+    # I'm not sure if I understand the question or not, but if we are freezing some neurons or using drop out,
+    # setting the weight to 0 effectively does the same thing as that doesn't have any impact on the result.
 
 if __name__ == "__main__":
     main()
