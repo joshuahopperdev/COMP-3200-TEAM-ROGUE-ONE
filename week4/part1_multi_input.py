@@ -45,7 +45,7 @@ def gradient_descent_multi(input, weights, true, alpha, iterations, debug = Fals
 
         for i in range(len(weight_deltas)):
             weights[i] -= alpha * weight_deltas[i]
-        weight_hist_result.append(weights)
+        weight_hist_result.append(weights.copy())
 
         if debug:
             print(f"Iter: {iter+1}\tPred: {pred}\tError: {error:.6f}\tWeights: {weights}")
@@ -75,7 +75,7 @@ def gradient_descent_multi_numpy(input, weights, true, alpha, iterations, debug 
         # print((alpha * np.outer(deltas,input)).shape) (1,3)
         # print(np_weights.shape) (3,)
         np_weights -= alpha * deltas * np_input
-        np_weight_hist_result.append(np_weights)
+        np_weight_hist_result.append(np_weights.copy())
 
         if debug:
             print(f"Iter: {iter+1}\tPred: {pred}\tError: {error:.6f}\tWeights: {np_weights}")
@@ -105,7 +105,11 @@ def main():
     np_weights = np.array([0.1, 0.2, -0.1])
     true = 1
     alpha = 0.01
-    np_weights, _, _ = gradient_descent_multi_numpy(input, np_weights, true, alpha, 4, debug = True)
+    np_weights, np_errors, np_weight_hist = gradient_descent_multi_numpy(input, np_weights, true, alpha, 4, debug = True)
+
+    # These print statements were for testing the returns from the function initially.
+    # print(f"---------------------- NP Errors\n{np_errors}")
+    # print(f"---------------------- NP Weight Hist\n{np_weight_hist}")
 
     if np.allclose(weights, np_weights, 1e-9):
         print("From Scratch and Numpy Example are equal.")
