@@ -73,5 +73,31 @@ def main():
 
 
 
+# In run 2, only index 1, balance, can learn, and in run 3, only index 2, 
+# breath, can learn; it searches (admittedly slowly, 
+# due to its small input, though not as slowly because we artificially scale 
+# it up here) for the point along its one-dimensional loss curve that is lowest, 
+# unconcerned with how "good" the others' placements are. But while I understand
+# it for this case, I'm not going to pretend that I understand how this generalizes
+# to massive numbers of neurons, with half of them frozen; that would be a lie. 
+# Whatever the truth is, it's pretty mind-bending, and I don't have it.
+
+# Each iteration, the miss will be multiplied by 1 - alpha * sum of squares of
+# nonfrozen inputs. For run 1, that's 1 - 0.01*(8.5^2+0.65^2+1.2^2) = 0.258875. 
+# For run 2, that's 1 - 0.3*(0.65)^2 =  0.87325  For run 3, that's 
+# 1 - 0.3*(1.2)^2 =  0.568.
+
+# And indeed we observe that our errors go down twice that fast, being reduced by
+# factor of (1/0.258875)^2 each round; initially I thought this meant I'd done
+# something wrong, but that's exactly what we'd expect when the miss goes
+# down by that much and the error is the square of that miss.
+
+# Because a large input won't throw off the weights modification by massively
+# overshooting when it's frozen, freezing blade angle allows us to increase
+# alpha by a great deal without worry. But, of course, it also forces us to!
+# Without our highest-magnitude learner, an alpha of 0.01 would be glacially
+# slow!
+
+
 if __name__ == "__main__":
     main()
