@@ -89,15 +89,15 @@ def test_multi_out_gd():
 # -- Part 3: Outer Product --
 def test_outer_product():
     try:
-        from part3_multi_in_out import outer_prod
+        from part3_multi_in_out import outer_product
     except ImportError:
         raise ImportError("Part 3 - outer product does not yet exist")
 
-    assert outer_prod([1, 2], [3, 4, 5]) == [
+    assert outer_product([1, 2], [3, 4, 5]) == [
         [3, 4, 5],
         [6, 8, 10],
     ], "A len-2 list outer_prod'ed with a len-3 list produces a 2x3 matrix; [1,2]x[3,4,5] == [[3,4,5],[6,8,10]]"
-    assert outer_prod([6, 7, 8], [9, 10]) == [
+    assert outer_product([6, 7, 8], [9, 10]) == [
         [54, 60],
         [63, 70],
         [72, 80],
