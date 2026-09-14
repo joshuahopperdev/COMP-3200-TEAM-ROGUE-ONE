@@ -107,13 +107,14 @@ def test_outer_product():
 # -- Part 4: Freezing --
 def test_freezing():
     try:
-        from part4_freeze import frozen, gradient_descent_frozen
+        from part4_freeze import gradient_descent_frozen
     except ImportError:
         raise ImportError(
             "Part 4 - gradient descent frozen or frozen indices don't exist yet"
         )
 
-    # Test 1: imported frozen
+    # Test 1: 1 index frozen
+    frozen = [2]
     frozen_copy = frozen.copy()
     sensing = [8.5, 0.65, 1.2]
     weights = [0.1, 0.2, -0.1]
@@ -130,7 +131,35 @@ def test_freezing():
     # that doesn't exist
     for i in range(len(weight_history) - 2):
         # The frozen weights must not change
-        for (j,) in range(len(weight_history)):
+        for j in range(len(weight_history[i]) - 1):
+            if j in frozen_copy:
+                assert (
+                    weight_history[i][j] == weight_history[i + 1][j]
+                ), "Frozen weights must not change"
+            else:
+                assert (
+                    weight_history[i][j] != weight_history[i + 1][j]
+                ), "Free weights must change"
+
+    # Test 2: 2 indices frozen
+    frozen = [0, 2]
+    frozen_copy = frozen.copy()
+    sensing = [8.5, 0.65, 1.2]
+    weights = [0.1, 0.2, -0.1]
+    true = 1
+    _, _, weight_history = gradient_descent_frozen(
+        sensing, weights, true, 0.3, 5, frozen
+    )
+
+    # Indices of frozen must not change
+    assert frozen == frozen_copy, "Indices of frozen must not change"
+    # Iterate through weight_history, comparing each value with the next
+    # range() is 0-based when given one argument, so subtract 2 from the
+    # length so we don't try to compare the last set of weights with a set
+    # that doesn't exist
+    for i in range(len(weight_history) - 2):
+        # The frozen weights must not change
+        for j in range(len(weight_history[i]) - 1):
             if j in frozen_copy:
                 assert (
                     weight_history[i][j] == weight_history[i + 1][j]
