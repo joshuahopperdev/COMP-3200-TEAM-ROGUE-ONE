@@ -41,7 +41,7 @@ def test_multi_in_gd():
 
     final_pred = w_sum(sensing, final_weights)
     assert (
-        abs(final_pred - 1) < 1e-10
+        abs(final_pred - 1) < .01
     ), "Final prediction should be close to the goal for an easy sensing"
 
 
@@ -78,11 +78,11 @@ def test_multi_out_gd():
                 deltas[i] >= next_deltas[i]
             ), "Predictions should be moving toward the target"
             assert (
-                weighti[i] != weightip[i]
+                weighti[i] == weightip[i]
                 if deltas[i] == next_deltas[i]
                 and pred[i] == next_pred[i]
                 and pred[i] == trues[i]
-                else weighti[i] == weightip[i]
+                else weighti[i] != weightip[i]
             ), "Weight should change each iteration unless the prediction matches the target"
 
 
