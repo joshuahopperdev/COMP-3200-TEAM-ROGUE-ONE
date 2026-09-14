@@ -6,27 +6,28 @@ def gradient_descent_outputs(input, weights, trues, alpha, iterations, debug = F
     """
     error_result = []
     weight_hist_result = []
+    weights_copy = weights.copy()
     for iter in range(0, iterations):
         # Predict
-        preds = [input * w for w in weights]
+        preds = [input * w for w in weights_copy]
 
         # Compare and get error
-        deltas = [preds[i] - trues[i] for i in range(len(weights))]
+        deltas = [preds[i] - trues[i] for i in range(len(weights_copy))]
         errors = [d ** 2 for d in deltas]
         mse = sum(errors) / len(errors)
         error_result.append(mse)
 
         # Learn
         weighted_deltas = [d * input for d in deltas]
-        for i in range(len(weights)):
-            weights[i] -= alpha * weighted_deltas[i]
+        for i in range(len(weights_copy)):
+            weights_copy[i] -= alpha * weighted_deltas[i]
 
-        weight_hist_result.append(weights.copy())
+        weight_hist_result.append(weights_copy.copy())
 
         if debug:
-            print(f"Iter: {iter+1}\tPred: {preds}\n\tError: {errors}\n\tWeights: {weights}\n\tMSE: {mse}")
+            print(f"Iter: {iter+1}\tPred: {preds}\n\tError: {errors}\n\tWeights: {weights_copy}\n\tMSE: {mse}")
 
-    return weights, error_result, weight_hist_result
+    return weights_copy, error_result, weight_hist_result
 
 def gradient_descent_outputs_numpy(input, weights, trues, alpha, iterations, debug = False):
     """
@@ -35,9 +36,11 @@ def gradient_descent_outputs_numpy(input, weights, trues, alpha, iterations, deb
     """
     error_result = []
     weight_hist_result = []
+    np_input = np.asarray(np.float64(input))
+    weights_copy = weights.copy()
     for iter in range(0, iterations):
         # Predict
-        preds = input * weights
+        preds = np_input * weights_copy
 
         # Compare and get error
         deltas = preds - trues
@@ -46,14 +49,13 @@ def gradient_descent_outputs_numpy(input, weights, trues, alpha, iterations, deb
         error_result.append(mse)
 
         # Learn
-        weights -= alpha * deltas * input
-        weight_hist_result.append(weights.copy())
+        weights_copy -= alpha * deltas * np_input
+        weight_hist_result.append(weights_copy.copy())
 
         if debug:
-            print(f"Iter: {iter+1}\tPred: {preds}\n\tError: {errors}\n\tWeights: {weights}\n\tMSE: {mse}")
+            print(f"Iter: {iter+1}\tPred: {preds}\n\tError: {errors}\n\tWeights: {weights_copy}\n\tMSE: {mse}")
 
-    return weights, error_result, weight_hist_result
-
+    return weights_copy, error_result, weight_hist_result
 
 def main():
     """
@@ -68,7 +70,7 @@ def main():
     weights, _, _ = gradient_descent_outputs(input, weights, trues, alpha, iterations, debug = True)
 
 
-    np_input = np.asarray([0.65])
+    np_input = 0.65
     np_weights = np.asarray([0.3, 0.2, 0.9])
     np_trues = np.asarray([0.0, 1.0, 0.0])
     alpha = 0.1
