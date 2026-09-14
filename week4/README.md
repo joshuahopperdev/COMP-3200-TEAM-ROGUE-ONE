@@ -114,7 +114,6 @@ This section brings in the concept of locking/freezing weights where they won't 
 during the training process or a portion of it. This forces the other weights to do their
 adjustments without the influence of the frozen ones being adjusted further.
 
-
 ```py
 def gradient_descent_frozen(input, weights, true, alpha, iterations, frozen):
     # kinda irrelevant
@@ -163,5 +162,7 @@ def gradient_descent_frozen(input, weights, true, alpha, iterations, frozen):
     return cur_weights, error_history, weights_history
 ```
 
+# Part 5: Watching the Weights
 
+# Part 6: Unit Tests
 
