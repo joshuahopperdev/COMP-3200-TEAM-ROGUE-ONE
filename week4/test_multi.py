@@ -59,10 +59,7 @@ def test_multi_out_gd():
     _, _, weight_history = gradient_descent_outputs(balance, weights, trues, 0.01, 20)
 
     # Iterate through weight_history, comparing each value with the next
-    # range() is 0-based when given one argument, so subtract 2 from the
-    # length so we don't try to compare the last set of weights with a set
-    # that doesn't exist
-    for i in range(len(weight_history) - 2):
+    for i in range(len(weight_history) - 1):
         weighti = weight_history[i]
         weightip = weight_history[i + 1]
         pred = [balance * weight for weight in weighti]
@@ -126,10 +123,7 @@ def test_freezing():
     # Indices of frozen must not change
     assert frozen == frozen_copy, "Indices of frozen must not change"
     # Iterate through weight_history, comparing each value with the next
-    # range() is 0-based when given one argument, so subtract 2 from the
-    # length so we don't try to compare the last set of weights with a set
-    # that doesn't exist
-    for i in range(len(weight_history) - 2):
+    for i in range(len(weight_history) - 1):
         # The frozen weights must not change
         for j in range(len(weight_history[i]) - 1):
             if j in frozen_copy:
@@ -154,10 +148,7 @@ def test_freezing():
     # Indices of frozen must not change
     assert frozen == frozen_copy, "Indices of frozen must not change"
     # Iterate through weight_history, comparing each value with the next
-    # range() is 0-based when given one argument, so subtract 2 from the
-    # length so we don't try to compare the last set of weights with a set
-    # that doesn't exist
-    for i in range(len(weight_history) - 2):
+    for i in range(len(weight_history) - 1):
         # The frozen weights must not change
         for j in range(len(weight_history[i]) - 1):
             if j in frozen_copy:
