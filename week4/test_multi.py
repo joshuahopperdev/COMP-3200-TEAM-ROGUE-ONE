@@ -107,58 +107,22 @@ def test_freezing():
         from part4_freeze import gradient_descent_frozen
     except ImportError:
         raise ImportError(
-            "Part 4 - gradient descent frozen or frozen indices don't exist yet"
+            "Part 4 - gradient descent frozen doesn't yet exist"
         )
 
-    from helpers import w_sum
-
     # Test 1: 1 index frozen
-    frozen = [2]
-    frozen_copy = frozen.copy()
-    sensing = [8.5, 0.65, 1.2]
-    weights = [0.1, 0.2, -0.1]
-    true = 1
-    _, _, weight_history = gradient_descent_frozen(
-        sensing, weights, true, 0.3, 5, frozen
-    )
-
-    # Indices of frozen must not change
-    assert frozen == frozen_copy, "Indices of frozen must not change"
-    # Iterate through weight_history, comparing each value with the next
-    for i in range(len(weight_history) - 1):
-        # Setup for checking that free weights change unless they don't need to.
-        weighti = weight_history[i]
-        weightip = weight_history[i + 1]
-        pred = w_sum(sensing, weighti)
-        next_pred = w_sum(sensing, weightip)
-
-        # Use abs(pred - true) for sheer magnitude, no direction or
-        # square exaggerations despite their technical correctness
-        delta = pred - true
-        next_delta = next_pred - true
-
-        # The frozen weights must not change
-        for j in range(len(weighti) - 1):
-            if j in frozen_copy:
-                assert (
-                    weighti[j] == weightip[j]
-                ), "Frozen weights must not change"
-            else:
-                assert (
-                    weighti[j] == weightip[j]
-                    if delta == next_delta
-                    and pred == next_pred
-                    and pred == true
-                    else weighti[j] != weightip[j]
-                ), "Free weights must change"
+    help_test_freezing([1], gradient_descent_frozen)
 
     # Test 2: 2 indices frozen
-    frozen = [0, 2]
+    help_test_freezing([0, 2], gradient_descent_frozen)
+
+def help_test_freezing(frozen, gdf):
+    from helpers import w_sum
     frozen_copy = frozen.copy()
     sensing = [8.5, 0.65, 1.2]
     weights = [0.1, 0.2, -0.1]
     true = 1
-    _, _, weight_history = gradient_descent_frozen(
+    _, _, weight_history = gdf(
         sensing, weights, true, 0.3, 5, frozen
     )
 
