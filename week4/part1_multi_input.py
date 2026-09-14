@@ -31,9 +31,10 @@ def gradient_descent_multi(input, weights, true, alpha, iterations, debug = Fals
     """
     error_result = []
     weight_hist_result = []
+    weights_copy = weights.copy()
     for iter in range(0, iterations):
         # Predict
-        pred = w_sum(input, weights)
+        pred = w_sum(input, weights_copy)
 
         # Compare and get error
         error = (pred - true) ** 2
@@ -44,13 +45,13 @@ def gradient_descent_multi(input, weights, true, alpha, iterations, debug = Fals
         weight_deltas = ele_mul(delta, input)
 
         for i in range(len(weight_deltas)):
-            weights[i] -= alpha * weight_deltas[i]
-        weight_hist_result.append(weights.copy())
+            weights_copy[i] -= alpha * weight_deltas[i]
+        weight_hist_result.append(weights_copy.copy())
 
         if debug:
             print(f"Iter: {iter+1}\tPred: {pred}\tError: {error:.6f}\tWeights: {weights}")
 
-    return weights, error_result, weight_hist_result
+    return weights_copy, error_result, weight_hist_result
 
 def gradient_descent_multi_numpy(input, weights, true, alpha, iterations, debug = False):
     """
