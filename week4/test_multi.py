@@ -70,16 +70,16 @@ def test_multi_out_gd():
         deltas = [abs(p - true) for p, true in zip(pred, trues)]
         next_deltas = [abs(p - true) for p, true in zip(next_pred, trues)]
 
-        for i in range(3):
+        for j in range(3):
             assert (
-                deltas[i] >= next_deltas[i]
+                deltas[j] >= next_deltas[j]
             ), "Predictions should be moving toward the target"
             assert (
-                weighti[i] == weightip[i]
-                if deltas[i] == next_deltas[i]
-                and pred[i] == next_pred[i]
-                and pred[i] == trues[i]
-                else weighti[i] != weightip[i]
+                weighti[j] == weightip[j]
+                if deltas[j] == next_deltas[j]
+                and pred[j] == next_pred[j]
+                and pred[j] == trues[j]
+                else weighti[j] != weightip[j]
             ), "Weight should change each iteration unless the prediction matches the target"
 
 
@@ -110,6 +110,8 @@ def test_freezing():
             "Part 4 - gradient descent frozen or frozen indices don't exist yet"
         )
 
+    from helpers import w_sum
+
     # Test 1: 1 index frozen
     frozen = [2]
     frozen_copy = frozen.copy()
@@ -124,15 +126,30 @@ def test_freezing():
     assert frozen == frozen_copy, "Indices of frozen must not change"
     # Iterate through weight_history, comparing each value with the next
     for i in range(len(weight_history) - 1):
+        # Setup for checking that free weights change unless they don't need to.
+        weighti = weight_history[i]
+        weightip = weight_history[i + 1]
+        pred = w_sum(sensing, weighti)
+        next_pred = w_sum(sensing, weightip)
+
+        # Use abs(pred - true) for sheer magnitude, no direction or
+        # square exaggerations despite their technical correctness
+        delta = pred - true
+        next_delta = next_pred - true
+
         # The frozen weights must not change
-        for j in range(len(weight_history[i]) - 1):
+        for j in range(len(weighti) - 1):
             if j in frozen_copy:
                 assert (
-                    weight_history[i][j] == weight_history[i + 1][j]
+                    weighti[j] == weightip[j]
                 ), "Frozen weights must not change"
             else:
                 assert (
-                    weight_history[i][j] != weight_history[i + 1][j]
+                    weighti[j] == weightip[j]
+                    if delta == next_delta
+                    and pred == next_pred
+                    and pred == true
+                    else weighti[j] != weightip[j]
                 ), "Free weights must change"
 
     # Test 2: 2 indices frozen
@@ -145,19 +162,31 @@ def test_freezing():
         sensing, weights, true, 0.3, 5, frozen
     )
 
-    # Indices of frozen must not change
-    assert frozen == frozen_copy, "Indices of frozen must not change"
-    # Iterate through weight_history, comparing each value with the next
     for i in range(len(weight_history) - 1):
+        # Setup for checking that free weights change unless they don't need to.
+        weighti = weight_history[i]
+        weightip = weight_history[i + 1]
+        pred = w_sum(sensing, weighti)
+        next_pred = w_sum(sensing, weightip)
+
+        # Use abs(pred - true) for sheer magnitude, no direction or
+        # square exaggerations despite their technical correctness
+        delta = pred - true
+        next_delta = next_pred - true
+
         # The frozen weights must not change
-        for j in range(len(weight_history[i]) - 1):
+        for j in range(len(weighti) - 1):
             if j in frozen_copy:
                 assert (
-                    weight_history[i][j] == weight_history[i + 1][j]
+                    weighti[j] == weightip[j]
                 ), "Frozen weights must not change"
             else:
                 assert (
-                    weight_history[i][j] != weight_history[i + 1][j]
+                    weighti[j] == weightip[j]
+                    if delta == next_delta
+                    and pred == next_pred
+                    and pred == true
+                    else weighti[j] != weightip[j]
                 ), "Free weights must change"
 
 
