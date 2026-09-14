@@ -18,7 +18,7 @@ plt.xlabel("iteration")
 plt.ylabel("weight value")
 plt.title("Part 1 weights, alpha = 0.01")
 plt.legend()
-plt.savefig("week4/fig1_weights.png", dpi=150)
+plt.savefig("fig1_weights.png", dpi=150)
 plt.close() # start a clean figure for the next plot
 
 
@@ -44,7 +44,7 @@ plt.xlabel("iteration")
 plt.ylabel("weight value")
 plt.title("Part 4 weights vs Unfrozen Weights")
 plt.legend()
-plt.savefig("week4/fig2_frozen.png", dpi=150)
+plt.savefig("fig2_frozen.png", dpi=150)
 plt.close()
 
 """
