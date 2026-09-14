@@ -5,6 +5,7 @@ We have multiple weights per input, and those have multiple adjustments that nee
 in each iteration.
 
 ## Part 1: Many In, One out & The Loud Channel(1b)
+# Caleb
 In this area, ele_mul() and normalize() are defined, with their respective uses to multiple
 weights and a singular output. Gradient descent was then performed with these two functions
 to show the effects with and without normalizing the input.
@@ -27,6 +28,7 @@ def normalize(channel):
 ```
 
 ## Part 2: One In, Many Out
+# Caleb
 This section shows multiple ouputs instead of just a single output, like in part 1. This time,
 1 input, 3 weights, gives 3 outputs. Before it was 1 input, 3 weights, 1 output.
 
@@ -58,6 +60,7 @@ def gradient_descent_outputs(input, weights, trues, alpha, iterations, debug = F
 ```
 
 ## Part 3: Many In, Many Out
+# Nathanael
 In part 3 its scaled up to the full intention, multiple weights with multiple outputs.
 As before, we can see how the weights change and adjust over the iterations as well
 as how it effects the outputs.
@@ -110,6 +113,7 @@ def gradient_descent_full(input, weights, trues, alpha, iterations):
 ```
 
 ## Part 4: Freezing the Inner Gaze
+# Nathanael
 This section brings in the concept of locking/freezing weights where they won't change 
 during the training process or a portion of it. This forces the other weights to do their
 adjustments without the influence of the frozen ones being adjusted further.
@@ -163,6 +167,19 @@ def gradient_descent_frozen(input, weights, true, alpha, iterations, frozen):
 ```
 
 # Part 5: Watching the Weights
+# Oliver
+This section didn't expand upon any new concepts. This section was for 
+showing a graphical representation for the concepts we put together earlier
+for weights and how they change over time.
 
 # Part 6: Unit Tests
-
+# Josiah
+Unit testing results:
+ PASS: test_freezing
+ PASS: test_multi_in_agreement
+ PASS: test_multi_in_gd
+ PASS: test_multi_in_out_agreement
+ PASS: test_multi_out_agreement
+ PASS: test_multi_out_gd
+ PASS: test_normalization
+ PASS: test_outer_product
