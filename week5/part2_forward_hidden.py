@@ -30,11 +30,13 @@ def forward(layer_0, weights_0_1, weights_1_2):
     # here, we're multiplying a 4x3 matrix by a 3x1, and relu of the dot products 
     # of each row with the vector are our 4 outputs.
     layer_1 = relu(weights_0_1.T@layer_0)
+    #print(layer_1.shape)
 
     # second layer is just product of the transpose of the weight matrix
     # and the input, no relu; so e.g. our 4x1 weight matrix and our 4x1 input
     # vector will return their dot product, a scalar.
     layer_2 = weights_1_2.T@layer_1
+    #print(layer_2.shape)
 
     # output both
     return layer_1, layer_2
@@ -42,9 +44,9 @@ def forward(layer_0, weights_0_1, weights_1_2):
 
 def main():
 
-    # at first I zipped tells and strike together,
+    # at first I zipped tells and strike together for this,
     # but there's literally no point, we don't use strike
-    # in this step
+    # in this section
     
     # for each input vector...
     for i in range(len(tells)):
@@ -57,3 +59,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# comment block regarding shapes and meanings is requested here;
+# I already did that and more above in the comments for forward(). 
+# Shapes are (4,) and (1,).
