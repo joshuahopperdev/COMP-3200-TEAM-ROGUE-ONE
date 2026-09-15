@@ -28,7 +28,6 @@ def one_step(layer_0, target, weights_0_1, weights_1_2, alpha):
     # forward pass
     layer_1, layer_2 = forward(layer_0, weights_0_1, weights_1_2)
 
-
     # layer 2 delta is easy: it's the difference between pred and true
     layer_2_delta = layer_2 - target
 
@@ -44,9 +43,27 @@ def one_step(layer_0, target, weights_0_1, weights_1_2, alpha):
 
     # now it's backprop time!
 
-    updated_weights_0_1 = weights_0_1 - alpha * layer_0 * layer_1_delta
-    updated_weights_1_2 = weights_1_2 - alpha * layer_1 * layer_2_delta
+    updated_weights_0_1 = weights_0_1 - alpha * np.outer(layer_0, layer_1_delta)
+    updated_weights_1_2 = weights_1_2 - alpha * np.outer(layer_1, layer_2_delta)
 
     
     
     return updated_weights_0_1, updated_weights_1_2, layer_2, layer_2_error
+
+
+
+def main():
+
+    new_weights_0_1, new_weights_1_2, old_layer_2, old_layer_2_error = one_step(tells[0], strike[0], weights_0_1, weights_1_2, alpha = 0.2)
+    _, new_layer_2 = forward(tells[0], new_weights_0_1, new_weights_1_2)
+    new_layer_2_error = (new_layer_2 - strike[0])**2
+
+    print(f"layer_2 before update was {old_layer_2}, and after the update was {new_layer_2}")
+    print(f"Layer 2's error before update was {old_layer_2_error}, and after the update was {new_layer_2_error}\n\n")
+    print(f"Weights of layer 1 before update had shape {weights_0_1.shape}")
+    print(f"Weights of layer 1 after update had shape {new_weights_0_1.shape}\n")
+    print(f"Weights of layer 2 before update had shape {weights_1_2.shape}")
+    print(f"Weights of layer 2 after update had shape {new_weights_1_2.shape}")
+
+if __name__ == "__main__":
+    main()
