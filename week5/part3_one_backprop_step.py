@@ -106,11 +106,11 @@ if __name__ == "__main__":
 
 
 # Using dimensions of 1 muddles this, so let's use a bigger example:
-# 3 inputs from hidden layer 1 to our final 5 outputs, means a 5x3
-# final layer weights_1_2. Our layer_2_delta will be a 3x1 matrix,
-# so weights_1_2 @ layer_2_delta will be a 5x3 x 3x1 = 5x1 vector,
-# with each row representing the dot product of the effect of input
-# on that final variable times the actual input
+# 3 inputs from hidden layer 1 to our final 5 outputs, means a 3x5
+# final layer weights_1_2. Our layer_2_delta will be a 5x1 matrix,
+# so weights_1_2 @ layer_2_delta will be a 3x5 x 5x1 = 3x1 vector,
+# with each row representing the dot product of the output deltas
+# and how much each input would have affected each of them
 
 # We multiply by relu2deriv to, well, scale by the derivative of this
 # part of the function chain. In this case, it will wipe out all
