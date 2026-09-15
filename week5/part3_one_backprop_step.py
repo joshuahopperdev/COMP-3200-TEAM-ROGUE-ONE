@@ -15,6 +15,10 @@ hidden_size = 4
 weights_0_1 = 2 * np.random.random((3, hidden_size)) - 1 # 3 x 4
 weights_1_2 = 2 * np.random.random((hidden_size, 1)) - 1 # 4 x 1
 
+
+# derivative of relu at y > 0 is 1, else 0, so
+# just return the truth value of each entry being
+# greater than 0
 def relu2deriv(y):
     return y > 0
 
@@ -43,10 +47,16 @@ def one_step(layer_0, target, weights_0_1, weights_1_2, alpha):
 
     # now it's backprop time!
 
+    # the weight update is alpha times the outer product of our 3 inputs and
+    # our 4 deltas: each column is the relevant delta x the input set,
+    # so each column of the weights (corresponding to the operations on a set
+    # of inputs to get one of the outputs) will be modified by the inputs x
+    # the delta relating to that output
     updated_weights_0_1 = weights_0_1 - alpha * np.outer(layer_0, layer_1_delta)
+
+    # same logic, but more trivial because it's got more 1s
     updated_weights_1_2 = weights_1_2 - alpha * np.outer(layer_1, layer_2_delta)
 
-    
     
     return updated_weights_0_1, updated_weights_1_2, layer_2, layer_2_error
 
@@ -54,10 +64,15 @@ def one_step(layer_0, target, weights_0_1, weights_1_2, alpha):
 
 def main():
 
+    # run it! on sensing 0
     new_weights_0_1, new_weights_1_2, old_layer_2, old_layer_2_error = one_step(tells[0], strike[0], weights_0_1, weights_1_2, alpha = 0.2)
+
+    # calculate our new layer 2 and layer 2 error
     _, new_layer_2 = forward(tells[0], new_weights_0_1, new_weights_1_2)
     new_layer_2_error = (new_layer_2 - strike[0])**2
 
+
+    # prints, yay
     print(f"layer_2 before update was {old_layer_2}, and after the update was {new_layer_2}")
     print(f"Layer 2's error before update was {old_layer_2_error}, and after the update was {new_layer_2_error}\n\n")
     print(f"Weights of layer 1 before update had shape {weights_0_1.shape}")
@@ -67,3 +82,14 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+# Hand-verification:
+# Old weight in row 2 of hidden layer 2 is 0.75623487, new weight is 0.8192639
+# alpha = 0.2,
+# layer_1 = [0, 0.51828245, 0, 0]
+# layer_2_delta = [-0.60805673]
+# only row 2 of layer 1 matters since we're only verifying for row 2
+# 0.8192639 ~= 0.75623487 - 0.2 * 0.51828245 * -0.60805663
+# confirmed
