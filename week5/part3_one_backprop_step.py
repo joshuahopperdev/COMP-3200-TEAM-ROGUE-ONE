@@ -41,9 +41,11 @@ def one_step(layer_0, target, weights_0_1, weights_1_2, alpha):
 
     # this one's muddlier and I really, really need to work through
     # reverse chain rule again some time to make sure I have this down.
-    # For e.g. our 1x1 layer_2_delta and our 4x1 weights_1_2.T, we'll
-    # get a 1x4 scaled by layer_2_delta and the derivative of relu
-    layer_1_delta = layer_2_delta @ weights_1_2.T * relu2deriv(layer_1)
+
+    layer_1_delta = weights_1_2 @ layer_2_delta * relu2deriv(layer_1)
+
+
+    
 
     # now it's backprop time!
 
@@ -93,3 +95,25 @@ if __name__ == "__main__":
 # only row 2 of layer 1 matters since we're only verifying for row 2
 # 0.8192639 ~= 0.75623487 - 0.2 * 0.51828245 * -0.60805663
 # confirmed
+
+# "explain in your own words why layer_1_delta uses weights_1_2.T (not
+# weights_1_2) and why we multiply by relu2deriv(layer_1)."
+
+# One implied facet of this assignment was using row vectors
+# for lots of stuff; I did not do so, I stuck with all column
+# vectors so I could just use forward() from part 2. My explanation
+# below reflects this.
+
+
+# Using dimensions of 1 muddles this, so let's use a bigger example:
+# 3 inputs from hidden layer 1 to our final 5 outputs, means a 5x3
+# final layer weights_1_2. Our layer_2_delta will be a 3x1 matrix,
+# so weights_1_2 @ layer_2_delta will be a 5x3 x 3x1 = 5x1 vector,
+# with each row representing the dot product of the effect of input
+# on that final variable times the actual input
+
+# We multiply by relu2deriv to, well, scale by the derivative of this
+# part of the function chain. In this case, it will wipe out all
+# modification of weights that didn't actually provide meaningful
+# informational content to our final answer. It's practically the
+# same thing as a freeze step!
