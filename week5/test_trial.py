@@ -51,7 +51,35 @@ def test_forward_shapes():
     try:
         from part2_forward_hidden import forward
     except ImportError:
-        raise ImportError
+        raise ImportError("Forward function does not yet exist")
+
+    ## Test 1 ##
+
+    # random seed doesn't affect shape,
+    # therefore you can pick any seed
+    np.random.seed(42)
+
+    # Set up weights
+    hidden_size = 4
+    weights_0_1 = 2 * np.random.random((3, hidden_size)) - 1 # 3 x 4
+    weights_1_2 = 2 * np.random.random((hidden_size, 1)) - 1 # 4 x 1
+
+    layer_1, layer_2 = forward(tells[0:1], weights_0_1, weights_1_2)
+
+    assert layer_1.shape == (1, hidden_size), f"layer_1 (Test 1): expected shape (1, {hidden_size}), got {layer_1.shape}"
+    assert layer_2.shape == (1, 1), f"layer_2 (Test 1): expected shape (1, 1), got {layer_2.shape}"
+
+    ## Test 2 ##
+    hidden_size = 6
+    weights_0_1 = 2 * np.random.random((3, hidden_size)) - 1 # 3 x 6
+    weights_1_2 = 2 * np.random.random((hidden_size, 1)) - 1 # 6 x 1
+
+    layer_1, layer_2 = forward(tells[1:2], weights_0_1, weights_1_2)
+
+    assert layer_1.shape == (1, hidden_size), f"layer_1 (Test 2): expected shape (1, {hidden_size}), got {layer_1.shape}"
+    assert layer_2.shape == (1, 1), f"layer_2 (Test 2): expected shape (1, 1), got {layer_2.shape}"
+
+
 
 if __name__ == "__main__":
     tests = [name for name in dir() if name.startswith("test_")]
