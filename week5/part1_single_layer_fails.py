@@ -6,6 +6,8 @@ def single_layer_train(tells, strike, alpha, epochs, seed, debug = False):
     """
     np.random.seed(seed)
     weights = 2 * np.random.random(3) - 1
+    mse_hist = []
+    total_error_hist = []
     for epoch in range(epochs):
         total_error = 0
         for i in range(len(tells)):
@@ -14,10 +16,16 @@ def single_layer_train(tells, strike, alpha, epochs, seed, debug = False):
             weights -= alpha * delta * tells[i]
             total_error += (pred - strike[i]) ** 2
             mse = total_error / len(tells)
+            mse_hist.append(mse)
+            total_error_hist.append(total_error)
         if epoch % 10 == 0:
             print(f"epoch {epoch + 1:>2}: MSE = {mse:.4f}")
             if debug:
                 print(f"epoch {epoch + 1:>2}: total_error = {total_error:.4f}")
+    if debug:
+        print(f"Final Weight: {weights}")
+
+    return weights, mse_hist, total_error_hist
 
 
 def main():
