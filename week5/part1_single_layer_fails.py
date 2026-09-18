@@ -1,6 +1,6 @@
 import numpy as np
 
-def single_layer_train(tells, strike, alpha, epochs, seed, debug = False):
+def single_layer_train(tells, strike, alpha, epochs, seed, verbose = False, debug = False):
     """
     This function trains with a single layer, no hidden layers.
     """
@@ -19,7 +19,8 @@ def single_layer_train(tells, strike, alpha, epochs, seed, debug = False):
             mse_hist.append(mse)
             total_error_hist.append(total_error)
         if epoch % 10 == 0:
-            print(f"epoch {epoch + 1:>2}: MSE = {mse:.4f}")
+            if verbose:
+                print(f"epoch {epoch + 1:>2}: MSE = {mse:.4f}")
             if debug:
                 print(f"epoch {epoch + 1:>2}: total_error = {total_error:.4f}")
     if debug:
@@ -33,7 +34,7 @@ def main():
     strike = np.array([1, 1, 0, 0])
     alpha = 0.1
 
-    single_layer_train(tells, strike, alpha, 60, 1, True)
+    single_layer_train(tells, strike, alpha, 60, 1, True, True)
 
 if __name__ == "__main__":
     main()
