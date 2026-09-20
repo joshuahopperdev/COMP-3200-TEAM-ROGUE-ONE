@@ -63,8 +63,8 @@ def test_forward_shapes():
     np.random.seed(42)
 
     hidden_sizes = [4, 6, 3, 8]
-    for i in range(1, 5):
-        forward_shape_helper(i, hidden_sizes[i], forward)
+    for i in range(4):
+        forward_shape_helper(i+1, hidden_sizes[i], forward)
     
 def forward_shape_helper(idx, hidden_size, forward):
     # Set up weights
@@ -90,13 +90,13 @@ def test_backprop_step():
         raise ImportError("One step function does not yet exist")
 
     ## Test 1: same seed/weight matrix as src ##
-    backprop_step_helper(1, 1, 4, tells[0:1], strike[0], one_step, forward)
+    backprop_step_helper(1, 1, 4, tells[0:1], strike[0:1], one_step, forward)
 
     ## Test 2: different seed/weight matrix ##
-    backprop_step_helper(2, 42, 6, tells[0:1], strike[0], one_step, forward)
+    backprop_step_helper(2, 42, 6, tells[0:1], strike[0:1], one_step, forward)
 
     ## Test 3: original seed/weight matrix, but different tell/strike ##
-    backprop_step_helper(3, 1, 4, tells[1:2], strike[1], one_step, forward)
+    backprop_step_helper(3, 1, 4, tells[1:2], strike[1:2], one_step, forward)
 
 def backprop_step_helper(idx, seed, hidden_size, tell, goal, one_step, forward):
     np.random.seed(seed)
@@ -151,8 +151,8 @@ def test_determinism():
 def determinism_helper(seed, train):
     tolerance = 1e-10
     
-    fst_w_0_1, fst_w_1_2, _ = train(tells, strike, alpha=0.2, epochs=60, hidden_size=4, seed=1)
-    snd_w_0_1, snd_w_1_2, _ = train(tells, strike, alpha=0.2, epochs=60, hidden_size=4, seed=1)
+    fst_w_0_1, fst_w_1_2, _ = train(tells, strike, alpha=0.2, epochs=60, hidden_size=4, seed=seed)
+    snd_w_0_1, snd_w_1_2, _ = train(tells, strike, alpha=0.2, epochs=60, hidden_size=4, seed=seed)
 
     assert np.allclose(fst_w_0_1, snd_w_0_1, rtol=tolerance, atol=tolerance), f"Input-to-hidden weights should be within 1e-10 with seed {seed}, fst={fst_w_0_1}, snd={snd_w_0_1}"
     assert np.allclose(fst_w_1_2, snd_w_1_2, rtol=tolerance, atol=tolerance), f"Hidden-to-output weights should be within 1e-10 with seed {seed}, fst={fst_w_1_2}, snd={snd_w_1_2}"
