@@ -27,9 +27,12 @@ def relu2deriv(y):
 # the update step, pre-modification of weights. The layer_2_error
 # this returns, ditto
 
+# layer_0 and target will be row vectors, specifically 1x3 and 1x1 here
+
 def one_step(layer_0, target, weights_0_1, weights_1_2, alpha):
 
     # forward pass
+    # also row vectors, here 1x4 and 1x1
     layer_1, layer_2 = forward(layer_0, weights_0_1, weights_1_2)
 
     # layer 2 delta is easy: it's the difference between pred and true
@@ -42,8 +45,9 @@ def one_step(layer_0, target, weights_0_1, weights_1_2, alpha):
     # this one's muddlier and I really, really need to work through
     # reverse chain rule again some time to make sure I have this down.
 
-    layer_1_delta = weights_1_2 @ layer_2_delta * relu2deriv(layer_1)
+    layer_1_delta = layer_2_delta @ weights_1_2.T * relu2deriv(layer_1)
 
+    
 
     
 
@@ -54,6 +58,9 @@ def one_step(layer_0, target, weights_0_1, weights_1_2, alpha):
     # so each column of the weights (corresponding to the operations on a set
     # of inputs to get one of the outputs) will be modified by the inputs x
     # the delta relating to that output
+    
+    # bleh, np.outer() does of course work on both row and column vectors in 
+    # any configuration...
     updated_weights_0_1 = weights_0_1 - alpha * np.outer(layer_0, layer_1_delta)
 
     # same logic, but more trivial because it's got more 1s
@@ -67,7 +74,7 @@ def one_step(layer_0, target, weights_0_1, weights_1_2, alpha):
 def main():
 
     # run it! on sensing 0
-    new_weights_0_1, new_weights_1_2, old_layer_2, old_layer_2_error = one_step(tells[0], strike[0], weights_0_1, weights_1_2, alpha = 0.2)
+    new_weights_0_1, new_weights_1_2, old_layer_2, old_layer_2_error = one_step(tells[0:1], strike[0:1], weights_0_1, weights_1_2, alpha = 0.2)
 
     # calculate our new layer 2 and layer 2 error
     _, new_layer_2 = forward(tells[0], new_weights_0_1, new_weights_1_2)
@@ -99,6 +106,25 @@ if __name__ == "__main__":
 # "explain in your own words why layer_1_delta uses weights_1_2.T (not
 # weights_1_2) and why we multiply by relu2deriv(layer_1)."
 
+# I originally did this with column vectors, so my more systematic
+# and fun work is below, now inapplicable.
+# And, um, the answer is sort of just dimensional analysis.
+# If this were layer_2_delta @ weights_1_2, we'd be multiplying a
+# 1x1 by a 4x1, an incoherent multiplication; we transpose so we can
+# multiply a 1x1 by a 1x4 to get a 1x4.
+
+
+# We multiply by relu2deriv to, well, scale by the derivative of this
+# part of the function chain. In this case, it will wipe out all
+# modification of weights that didn't actually provide meaningful
+# informational content to our final answer. It's practically the
+# same thing as a freeze step!
+
+
+
+
+# expunged:
+
 # One implied facet of this assignment was using row vectors
 # for lots of stuff; I did not do so, I stuck with all column
 # vectors so I could just use forward() from part 2. My explanation
@@ -111,9 +137,3 @@ if __name__ == "__main__":
 # so weights_1_2 @ layer_2_delta will be a 3x5 x 5x1 = 3x1 vector,
 # with each row representing the dot product of the output deltas
 # and how much each input would have affected each of them
-
-# We multiply by relu2deriv to, well, scale by the derivative of this
-# part of the function chain. In this case, it will wipe out all
-# modification of weights that didn't actually provide meaningful
-# informational content to our final answer. It's practically the
-# same thing as a freeze step!
