@@ -25,17 +25,17 @@ def relu(x):
 #results experimentally verified very sloppily by using np.ones for the weights
 # seems to work
 def forward(layer_0, weights_0_1, weights_1_2):
-    # first layer is equal to relu of the product of the transpose of the weight matrix
-    # and the input. So for e.g. our 3x4 weight matrix and our 3x1 input vector
-    # here, we're multiplying a 4x3 matrix by a 3x1, and relu of the dot products 
-    # of each row with the vector are our 4 outputs.
-    layer_1 = relu(weights_0_1.T@layer_0)
+    # first layer is equal to relu of the product of the weight matrix and the input.
+    # So for e.g. our 3x4 weight matrix and our 1x3 input vector
+    # here, we're multiplying a 1x3 vector by a 3x4 matrix, and relu of the dot products 
+    # of each column with the vector are our 1x4 outputs.
+    layer_1 = relu(layer_0@weights_0_1)
     #print(layer_1.shape)
 
-    # second layer is just product of the transpose of the weight matrix
-    # and the input, no relu; so e.g. our 4x1 weight matrix and our 4x1 input
-    # vector will return their dot product, a scalar.
-    layer_2 = weights_1_2.T@layer_1
+    # second layer is just product of the input and the weight matrix, no relu;
+    # so e.g. our 1x4 input vector and our 4x1 weight matrix will return their 
+    # dot product, a scalar.
+    layer_2 = layer_1@weights_1_2
     #print(layer_2.shape)
 
     # output both
@@ -51,7 +51,7 @@ def main():
     # for each input vector...
     for i in range(len(tells)):
         # run a forward pass...
-        layer_1, layer_2 = forward(tells[i], weights_0_1, weights_1_2)
+        layer_1, layer_2 = forward(tells[i:i+1], weights_0_1, weights_1_2)
 
         # and print it out.
         print(f"For sensing {i}, layer 1's result is {layer_1}, and layer 2's result is {layer_2}\n")
