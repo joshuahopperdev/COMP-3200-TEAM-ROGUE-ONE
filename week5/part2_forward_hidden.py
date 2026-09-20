@@ -30,13 +30,13 @@ def forward(layer_0, weights_0_1, weights_1_2):
     # here, we're multiplying a 1x3 vector by a 3x4 matrix, and relu of the dot products 
     # of each column with the vector are our 1x4 outputs.
     layer_1 = relu(layer_0@weights_0_1)
-    print(layer_1.shape)
+    #print(layer_1.shape)
 
     # second layer is just product of the input and the weight matrix, no relu;
     # so e.g. our 1x4 input vector and our 4x1 weight matrix will return their 
     # dot product, a scalar.
     layer_2 = layer_1@weights_1_2
-    print(layer_2.shape)
+    #print(layer_2.shape)
 
     # output both
     return layer_1, layer_2
