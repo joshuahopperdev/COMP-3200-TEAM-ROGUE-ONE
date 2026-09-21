@@ -13,7 +13,7 @@ strike = np.array([[1, 1, 0, 0]]).T # column vector, shape (4, 1)
 
 
 # Function to train the network over multiple epochs using stochastic gradient descent
-def train(tells, strike, alpha, epochs, hidden_size, seed):
+def train(tells, strike, alpha, epochs, hidden_size, seed, verbose = False):
     # Set random seed so results can be reproduced
     np.random.seed(seed)
 
@@ -47,7 +47,8 @@ def train(tells, strike, alpha, epochs, hidden_size, seed):
         # Print total squared error every 10 epochs
         # +1 so it doesn't print right away
         if (epoch + 1) % 10 == 0:
-            print(f"Epoch {epoch + 1:2d} | Total Error: {total_epoch_error:.6f}")
+            if verbose:
+                print(f"Epoch {epoch + 1:2d} | Total Error: {total_epoch_error:.6f}")
 
     # Return updated weights and error log
     return weights_0_1, weights_1_2, error_history
