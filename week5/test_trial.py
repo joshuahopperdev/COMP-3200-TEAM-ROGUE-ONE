@@ -134,7 +134,7 @@ def test_full_train_converge():
     pred = relu(tells @ w_0_1) @ w_1_2
 
     # Assertions
-    assert np.all([error < 0.01 for error in error_history[-1]]), f"Final total error must be below a small threshold (0.01), got {error_history[-1]}"
+    assert error_history[-1] < 0.01, f"Final total error must be below a small threshold (0.01), got {error_history[-1]}"
     assert np.all([abs(p - s) < 0.5 for p, s in zip(pred, strike)]), f"Each prediction must be on the correct side of 0.5, got {pred}"
 
 # --------- Part 6: Determinism --------- #
