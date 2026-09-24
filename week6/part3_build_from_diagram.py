@@ -10,10 +10,11 @@ tells = np.array([[1, 0, 1], # foot shift, no guard drop, exhale
 # Ground truth: 1 = strike imminent, 0 = they will hold
 strike = np.array([[1, 1, 0, 0]]).T # column vector, shape (4, 1)
 
-
+# applies relu to a numpy array
 def relu(input):
     return input * (input > 0)
 
+# multiplies a numpy array by presumed relu's derivative 
 def relu2deriv(input):
     return input > 0
 
@@ -62,7 +63,7 @@ def train_from_diagram(tells, strike, alpha, epochs, seed, layer_lens = [3, 8, 4
             # set the last delta, since its process is a bit special
             deltas[-1] = layers[-1] - strike[i:i+1]
 
-            # save our error before we go on, since we only need 
+            # add in our error before we go on, since we only need 
             # this delta to calculate it
             err_hist[epoch] += deltas[-1]**2
 
@@ -70,10 +71,14 @@ def train_from_diagram(tells, strike, alpha, epochs, seed, layer_lens = [3, 8, 4
             # are deltas, since we already set the last one)
             for j in range(len(deltas) - 1):
                 deltas[-j-2] = deltas[-j-1] @ weight_mats[-j-1].T * relu2deriv(layers[-j-2])
+
+            # do the actual weight updating
             for j in range(len(weight_mats)):
                 weight_mats[j] = weight_mats[j] - alpha * np.outer(layers[j], deltas[j]) 
+        # print error every 30 epochs
         if epoch % 30 == 29:
             print(err_hist[epoch]) 
+    # run one more forward pass for each and print it
     return [forward(input, weight_mats)[-1] for input in tells]
                      
 
@@ -89,4 +94,18 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# Weight matrix 1 is 3x8 - it connects the input, layer 0, to layer 1, and converting
+# from 3 dimensions to 8 requires a 3x8 matrix (for post-multiplying without transposition),
+# when converting row vector to row vector, e.g. 1x3->1x8
+
+# Weight matrix 2 is 8x4 - it connects layer 1 to layer 2, and converting
+# from 8 dimensions to 4 requires an 8x4 matrix (for post-multiplying without transposition),
+# when converting row vector to row vector, e.g. 1x8->1x4
+
+# Weight matrix 3 is 4x1 - it connects layer 2 to the output, layer 3, and converting
+# from 4 dimensions to 1 requires a 4x1 matrix (for post-multiplying without transposition),
+# when converting row vector to row vector, e.g. 1x4->1x1
+
 
