@@ -45,7 +45,6 @@ def train_from_diagram(tells, strike, alpha, epochs, seed, layer_lens = [3, 8, 4
     weight_mats = [0] * (len(layer_lens) - 1)
     for i in range(len(layer_lens) - 1):
         weight_mats[i] = 2*np.random.random((layer_lens[i], layer_lens[i+1])) - 1
-        print(weight_mats[i])
 
     # make an empty error history
     # for each epoch.
@@ -65,22 +64,29 @@ def train_from_diagram(tells, strike, alpha, epochs, seed, layer_lens = [3, 8, 4
 
             # save our error before we go on, since we only need 
             # this delta to calculate it
-            err_hist[epoch] = deltas[-1]**2
+            err_hist[epoch] += deltas[-1]**2
 
             # set all the other deltas (1 less iteration than there
             # are deltas, since we already set the last one)
-            for i in range(len(deltas) - 1):
-                deltas[-i-2] = deltas[-i-1] @ weight_mats[-i-1].T * relu2deriv(layers[-i-2])
-                print(deltas[-i-2])
+            for j in range(len(deltas) - 1):
+                deltas[-j-2] = deltas[-j-1] @ weight_mats[-j-1].T * relu2deriv(layers[-j-2])
+            for j in range(len(weight_mats)):
+                weight_mats[j] = weight_mats[j] - alpha * np.outer(layers[j], deltas[j]) 
+        if epoch % 30 == 29:
+            print(err_hist[epoch]) 
+    return [forward(input, weight_mats)[-1] for input in tells]
+                     
 
 
 
 
 
 
+def main():
+    print(train_from_diagram(tells, strike, 0.1, 150, 4, layer_lens = [3, 8, 4, 1]))
+    print(strike[:])
 
 
-
-#forward(np.array([[0, 1, 2]]), [np.array([2, 4, 9]), np.array([3])])
-#train_from_diagram(tells, strike, 0, 2, 4, layer_lens = [3, 2, 1])
+if __name__ == "__main__":
+    main()
 
