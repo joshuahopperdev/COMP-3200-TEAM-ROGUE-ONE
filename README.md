@@ -77,11 +77,11 @@ are now a rogue actor without our master.
 
 
 | Name | GitHub handle | Role, 8/17-8/30 | Role, 8/31-9/06 | Role, 9/07-9/13 | Role, 9/14-9/20 | Role, 9/21- |
-|---|---|---|---|---|---|---|---|
+|---|---|---|---|---|---|---|
 | Caleb Hopper | @joshuahopperdev | Repo Lead, Standup Lead | Repo Lead, Integration Tester | Documentation Lead, Review Coordinator | Repo Lead, Review Coordinator | Integration Tester, Documentation Lead
 | Josiah Duvalian | @jduvalian | Review Coordinator | Documentation Lead | Integration Tester | Integration Tester | Standup Lead |
 | Nathanael Williams | @Williams-Nathanael | Documentation Lead | Review Coordinator | Standup Lead | Standup Lead | Repo Lead |
-| Oliver Pham | @Odog0 | Integration Tester | Standup Lead | Repo Lead | Documentation Lead | Review Coordinator
+| Oliver Pham | @Odog0 | Integration Tester | Standup Lead | Repo Lead | Documentation Lead | Review Coordinator |
 
 **Communication channel:** Discord chat
 
