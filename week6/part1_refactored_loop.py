@@ -42,7 +42,7 @@ def train(tells, strike, alpha, epochs, hidden_size, seed, verbose = False):
 
             # --- BACKWARD ---
             layer_2_delta = layer_2 - target # (1, 1)
-            layer_1_delta = layer_2_delta @ weights_1_2.T * relu2deriv(layer_2) # (1, hidden_size)
+            layer_1_delta = layer_2_delta @ weights_1_2.T * relu2deriv(layer_1) # (1, hidden_size)
 
             # --- LEARN ---
             weights_0_1 -= alpha * layer_0.T @ layer_1_delta # (3, 1) @ (1, hidden_size) -> broadcast over shape (3, hidden_size) -> (3, hidden_size)
