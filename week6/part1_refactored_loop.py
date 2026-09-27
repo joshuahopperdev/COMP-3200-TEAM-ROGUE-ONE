@@ -30,23 +30,7 @@ def train(tells, strike, alpha, epochs, hidden_size, seed, verbose = False):
 
         # Process each sensing sample one at a time (Stochastic GD)
         for i in range(len(tells)):
-            layer_0 = tells[i:i+1] # current input sensing vector, shape (1, 3)
-            target = strike[i:i+1] # current ground truth target, shape (1, 1)
-
-            # --- FORWARD ---
-            layer_1 = relu(layer_0 @ weights_0_1) # (1, hidden_size)
-            layer_2 = layer_1 @ weights_1_2 # (1, 1)
-
-            # --- COMPARE ---
-            total_error += np.sum((layer_2 - target) ** 2) # (1, 1)
-
-            # --- BACKWARD ---
-            layer_2_delta = layer_2 - target # (1, 1)
-            layer_1_delta = layer_2_delta @ weights_1_2.T * relu2deriv(layer_1) # (1, hidden_size)
-
-            # --- LEARN ---
-            weights_0_1 -= alpha * layer_0.T @ layer_1_delta # (3, 1) @ (1, hidden_size) -> broadcast over shape (3, hidden_size) -> (3, hidden_size)
-            weights_1_2 -= alpha * layer_1.T @ layer_2_delta # (hidden_size, 1) @ (1, 1) -> broadcast over shape (hidden_size, 1) -> (hidden_size, 1)
+            _, _, _, _, _, weights_0_1, weights_1_2, total_error = onestep(tells, strike, i, weights_0_1, weights_1_2, alpha, total_error)
 
         # Save this epoch's total error
         error_history[i] = total_error
@@ -57,5 +41,37 @@ def train(tells, strike, alpha, epochs, hidden_size, seed, verbose = False):
             if verbose:
                 print(f"Epoch {epoch + 1:2d} | Total Error: {total_error:.6f}")
 
-    # Return updated weights and error log
+    # Return final weights and error log
     return weights_0_1, weights_1_2, error_history
+
+def onestep(tells, strike, idx, weights_0_1, weights_1_2, alpha, total_error):
+    """
+    One step of the Predict-Compare-Learn loop
+    Parameters:
+    `tells` (in): the dataset
+    `strike` (in): labels for the dataset
+    `idx` (in): index with which to get the current tell/strike
+    `weights_0_1` (in): weight matrix from layer_0 to layer_1
+    `weights_1_2` (in): weight matrix from layer_1 to layer_2
+    `alpha` (in): alpha value used to reign in weight updates
+    `total_error` (in): total error for the overall epoch
+    """
+    layer_0 = tells[idx:idx+1]
+    target = strike[idx:idx+1]
+
+    # --- FORWARD ---
+    layer_1 = relu(layer_0 @ weights_0_1) # (1, hidden_size)
+    layer_2 = layer_1 @ weights_1_2 # (1, 1)
+
+    # --- COMPARE ---
+    total_error += np.sum((layer_2 - target) ** 2) # (1, 1)
+
+    # --- BACKWARD ---
+    layer_2_delta = layer_2 - target # (1, 1)
+    layer_1_delta = layer_2_delta @ weights_1_2.T * relu2deriv(layer_1) # (1, hidden_size)
+
+    # --- LEARN ---
+    weights_0_1 -= alpha * layer_0.T @ layer_1_delta # (3, 1) @ (1, hidden_size) -> broadcast over shape (3, hidden_size) -> (3, hidden_size)
+    weights_1_2 -= alpha * layer_1.T @ layer_2_delta # (hidden_size, 1) @ (1, 1) -> broadcast over shape (hidden_size, 1) -> (hidden_size, 1)
+
+    return layer_0, layer_1, layer_2, layer_1_delta, layer_2_delta, weights_0_1, weights_1_2, total_error
