@@ -79,7 +79,7 @@ def train_from_diagram(tells, strike, alpha, epochs, seed, layer_lens = [3, 8, 4
         if epoch % 30 == 29:
             print(err_hist[epoch]) 
     # run one more forward pass for each and print it
-    return [forward(input, weight_mats)[-1] for input in tells]
+    return err_hist, [forward(input, weight_mats)[-1] for input in tells]
                      
 
 
@@ -87,8 +87,8 @@ def train_from_diagram(tells, strike, alpha, epochs, seed, layer_lens = [3, 8, 4
 
 
 
-def main():
-    print(train_from_diagram(tells, strike, 0.1, 150, 4, layer_lens = [3, 8, 4, 1]))
+def main():        
+    print(train_from_diagram(tells, strike, 0.1, 150, 4, layer_lens = [3, 8, 4, 1])[1])
     print(strike[:])
 
 
