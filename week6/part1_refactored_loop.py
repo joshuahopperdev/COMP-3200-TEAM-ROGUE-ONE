@@ -33,7 +33,7 @@ def train(tells, strike, alpha, epochs, hidden_size, seed, verbose = False):
             _, _, _, _, _, weights_0_1, weights_1_2, total_error = onestep(tells, strike, i, weights_0_1, weights_1_2, alpha, total_error)
 
         # Save this epoch's total error
-        error_history[i] = total_error
+        error_history[epoch] = total_error
 
         # Print total squared error every 10 epochs
         # +1 so it doesn't print right away
