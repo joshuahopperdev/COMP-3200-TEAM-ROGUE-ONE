@@ -31,11 +31,39 @@ def test_one_refactor_correctness():
     except ImportError as e:
         raise ImportError(f"Error loading train from part 1. {e}")
 
-    final_error = train(tells, strike, 0.2, 60, 4, 1)
-    assert np.allclose(final_error, final_error_regression, rtol=1e-9), f"Final error should be near 0.000015. Final error: {final_error}"
+    _, _, error_history = train(tells, strike, 0.2, 60, 4, 1)
+    assert np.allclose(error_history[-1], final_error_regression, rtol=1e-9), f"Final error should be near {final_error_regression}. Final error: {error_history[-1]}"
 
 def test_shape_sanity():
-    pass
+    try:
+        from part1_refactored_loop import onestep
+    except ImportError as e:
+        raise ImportError(f"Error loading onestep from part 1. {e}")
+
+    hidden_size = 4
+    alpha = 0.2
+    np.random.seed(1)
+
+    weights_0_1 = (2 * np.random.random((tells.shape[1], hidden_size)) - 1)
+    weights_1_2 = (2 * np.random.random((hidden_size, 1)) - 1)
+
+    total_error = 0.0
+
+    layer_0, layer_1, layer_2, layer_1_delta, layer_2_delta, weights_0_1, weights_1_2, total_error = onestep(tells, strike, 0, weights_0_1, weights_1_2, alpha, total_error)
+
+    assert layer_0.shape == (1, 3), (f"Expected layer_0 shape (1, 3). Actual {layer_0.shape}")
+
+    assert layer_1.shape == (1, 4), (f"Expected layer_1 shape (1, 4). Actual {layer_1.shape}")
+
+    assert layer_2.shape == (1, 1), (f"Expected layer_2 shape (1, 1). Actual {layer_2.shape}")
+
+    assert layer_1_delta.shape == (1, 4), (f"Expected layer_1_delta shape (1, 4). Actual {layer_1_delta.shape}")
+
+    assert layer_2_delta.shape == (1, 1), (f"Expected layer_2_delta shape (1, 1). Actual {layer_2_delta.shape}")
+
+    assert weights_0_1.shape == (3, 4), (f"Expected weights_0_1 shape (3, 4). Actual {weights_0_1.shape}")
+
+    assert weights_1_2.shape == (4, 1), (f"Expected weights_1_2 shape (4, 1). Actual {weights_1_2.shape}")
 
 def test_deeper_net_runs():
     try:
@@ -43,16 +71,16 @@ def test_deeper_net_runs():
     except ImportError as e:
         raise ImportError(f"Error loading train_from_diagram from part 3. {e}")
     epochs = 60
-    error_history = train_from_diagram(tells, strike, 0.2, epochs, 1)
+    error_history, _ = train_from_diagram(tells, strike, 0.2, epochs, 1)
     assert len(error_history) == epochs, f"Error history length should equal epochs. Error History Length: {len(error_history)}\tEpochs: {epochs}"
 
 def test_deeper_net_convergence():
     try:
-        from part3_build_from_diagram import train_and_predict
+        from part3_build_from_diagram import train_from_diagram
     except ImportError as e:
-        raise ImportError(f"Error loading train_and_predict from part 3. {e}")
+        raise ImportError(f"Error loading train_from_diagram from part 3. {e}")
 
-    error_history, predictions = train_and_predict(tells, strike, 0.1, 150, 4)
+    error_history, predictions = train_from_diagram(tells, strike, 0.1, 150, 4)
 
     final_error = error_history[-1]
     assert final_error <  0.001, f"Final Error should be less than 10^-3. Final Error: {final_error}"
@@ -67,8 +95,8 @@ def test_determinism():
     except ImportError as e:
         raise ImportError(f"Error loading train_from_diagram from part 3. {e}")
 
-    test_one_error_history = train_from_diagram(tells, strike, 0.2, 60, 42)
-    test_two_error_history = train_from_diagram(tells, strike, 0.2, 60, 42)
+    test_one_error_history, _ = train_from_diagram(tells, strike, 0.2, 60, 42)
+    test_two_error_history, _ = train_from_diagram(tells, strike, 0.2, 60, 42)
     assert len(test_one_error_history) == len(test_two_error_history), f"Length of error histories do not match. Length One: {len(test_one_error_history)}\tLength Two: {len(test_two_error_history)}"
     for i in range(len(test_one_error_history)):
         np.testing.assert_allclose(test_one_error_history[i], test_two_error_history[i]), f"Errors do not match at epoch: {i+1}. {test_one_error_history[i]} to {test_two_error_history[i]}"

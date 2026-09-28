@@ -38,7 +38,7 @@ def forward(input, weight_mats):
 
 # I don't like the idea of writing a function for a particular shape; 
 # this function works for any shape, but defaults to the assignment spec shape.
-def train_from_diagram(tells, strike, alpha, epochs, seed, layer_lens = [3, 8, 4, 1]):
+def train_from_diagram(tells, strike, alpha, epochs, seed, layer_lens = [3, 8, 4, 1], verbose = False):
     # initialize weight matrices, sizes calculated from layer_lens.
     # so for e.g. layer_lens of (3, 4, 1), this would initialize 2
     # matrices, a 3x4 and a 4x1
@@ -77,7 +77,8 @@ def train_from_diagram(tells, strike, alpha, epochs, seed, layer_lens = [3, 8, 4
                 weight_mats[j] = weight_mats[j] - alpha * np.outer(layers[j], deltas[j]) 
         # print error every 30 epochs
         if epoch % 30 == 29:
-            print(err_hist[epoch]) 
+            if verbose:
+                print(err_hist[epoch]) 
     # run one more forward pass for each and print it
     return err_hist, [forward(input, weight_mats)[-1] for input in tells]
                      
@@ -88,7 +89,7 @@ def train_from_diagram(tells, strike, alpha, epochs, seed, layer_lens = [3, 8, 4
 
 
 def main():        
-    print(train_from_diagram(tells, strike, 0.1, 150, 4, layer_lens = [3, 8, 4, 1])[1])
+    print(train_from_diagram(tells, strike, 0.1, 150, 4, layer_lens = [3, 8, 4, 1])[1], verbose = True)
     print(strike[:])
 
 
