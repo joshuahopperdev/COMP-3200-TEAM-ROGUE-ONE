@@ -50,7 +50,7 @@ def train(X_train, Y_train, X_val, Y_val, iterations=350):
             delta_1 = delta_2.dot(W_1_2.T) * relu_d(layer_1)
 
             W_1_2 -= alpha * layer_1.T.dot(delta_2)
-            W_0_1 -= alpha * layer_0.dot(delta_1)
+            W_0_1 -= alpha * layer_0.T.dot(delta_1)
 
         train_acc = correct / len(X_train)
         val_acc = evaluate(X_val, Y_val, W_0_1, W_1_2)
