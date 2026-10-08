@@ -23,6 +23,19 @@ def evaluate(X, Y, W_0_1, W_1_2):
     
     return correct / len(X)
 
+# presumes average dropout rate of 50%
+def dropout_step(layer_0, target, W_0_1, W_1_2, mask, alpha):
+    # redundant, but clarifies
+    layer_0 = layer_0
+    layer_1 = relu(layer_0.dot(W_0_1)) * mask * 2
+    layer_2 = layer_1.dot(W_1_2)
+
+    delta_2 = layer_2 - target
+    delta_1 = delta_2.dot(W_1_2.T) * relu_d(layer_1) * mask
+    W_1_2 -= alpha * layer_1.T.dot(delta_2)
+    W_0_1 -= alpha * layer_0.T.dot(delta_1)
+
+
 
 def train_dropout(X_train, Y_train, X_val, Y_val, iterations=350, dropout = True):
     np.random.seed(1)
@@ -107,12 +120,6 @@ if __name__ == "__main__":
     print(val_hist_dropout[-1])
 
 
-
-
-    # Find the best validation accuracy
-#    best_iteration = np.argmax(val_hist) + 1
-#    best_val_acc = val_hist[best_iteration - 1]
-#    print(f"Validation accuracy peaked at iteration {best_iteration} with accuracy {best_val_acc:.4f}")
 
     # ---- Plot ----
     plt.plot(range(1, iterations + 1), train_hist_control, label="Training Accuracy without Dropout")
