@@ -58,6 +58,9 @@ def train_dropout(X_train, Y_train, X_val, Y_val, iterations=350, dropout = True
 
             # ---- Backward ----
             delta_2 = layer_2 - Y_train[i:i+1]
+            # make sure not to modify any weights by masked values!
+            # If they didn't contribute to the final run, don't modify them
+            # as if they did!
             delta_1 = delta_2.dot(W_1_2.T) * relu_d(layer_1) * mask # mask is all 1s if dropout is false, else it's the dropout list
 
             W_1_2 -= alpha * layer_1.T.dot(delta_2)
@@ -74,16 +77,20 @@ def train_dropout(X_train, Y_train, X_val, Y_val, iterations=350, dropout = True
     return W_0_1, W_1_2, train_hist, val_hist
 
 if __name__ == "__main__":
-    W_0_1, W_1_2, train_hist, val_hist = train_dropout(X_train, Y_train, X_val, Y_val, iterations)
+    _, _, train_hist_dropout, val_hist_dropout = train_dropout(X_train, Y_train, X_val, Y_val, iterations, True)
+    _, _, train_hist_control, val_hist_control = train_dropout(X_train, Y_train, X_val, Y_val, iterations, False)
+        
 
     # Find the best validation accuracy
-    best_iteration = np.argmax(val_hist) + 1
-    best_val_acc = val_hist[best_iteration - 1]
-    print(f"Validation accuracy peaked at iteration {best_iteration} with accuracy {best_val_acc:.4f}")
+#    best_iteration = np.argmax(val_hist) + 1
+#    best_val_acc = val_hist[best_iteration - 1]
+#    print(f"Validation accuracy peaked at iteration {best_iteration} with accuracy {best_val_acc:.4f}")
 
     # ---- Plot ----
-    plt.plot(range(1, iterations + 1), train_hist, label="Training Accuracy")
-    plt.plot(range(1, iterations + 1), val_hist, label="Validation Accuracy")
+    plt.plot(range(1, iterations + 1), train_hist_dropout, label="Training Accuracy with Dropout")
+    plt.plot(range(1, iterations + 1), val_hist_dropout, label="Validation Accuracy with Dropout")
+    plt.plot(range(1, iterations + 1), train_hist_control, label="Training Accuracy without Dropout")
+    plt.plot(range(1, iterations + 1), val_hist_control, label="Validation Accuracy without Dropout")
 
     plt.xlabel("Iteration")
     plt.ylabel("Accuracy")
