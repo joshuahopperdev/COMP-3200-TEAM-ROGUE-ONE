@@ -72,14 +72,42 @@ def train_dropout(X_train, Y_train, X_val, Y_val, iterations=350, dropout = True
         train_hist.append(train_acc)
         val_hist.append(val_acc)
 
-        print(f"Iteration {it+1}/{iterations} - Train Acc: {train_acc:.4f}, Val Acc: {val_acc:.4f}")
+#        print(f"Iteration {it+1}/{iterations} - Train Acc: {train_acc:.4f}, Val Acc: {val_acc:.4f}")
 
     return W_0_1, W_1_2, train_hist, val_hist
 
 if __name__ == "__main__":
-    _, _, train_hist_dropout, val_hist_dropout = train_dropout(X_train, Y_train, X_val, Y_val, iterations, True)
-    _, _, train_hist_control, val_hist_control = train_dropout(X_train, Y_train, X_val, Y_val, iterations, False)
-        
+    W_0_1_contr, W_1_2_contr, train_hist_control, val_hist_control = train_dropout(X_train, Y_train, X_val, Y_val, iterations, False)
+    W_0_1_drop, W_1_2_drop, train_hist_dropout, val_hist_dropout = train_dropout(X_train, Y_train, X_val, Y_val, iterations, True)
+    best_pass_c = np.argmax(val_hist_control) + 1
+    best_val_acc_c = val_hist_control[best_pass_c-1]
+    best_pass_d = np.argmax(val_hist_dropout) + 1
+    best_val_acc_d = val_hist_dropout[best_pass_d-1]
+
+    print("Without Dropout:")
+    print("________________")
+    print("Final training round's accuracy on the training set was:")
+    print(train_hist_control[-1])
+    print("Final weights' accuracy on the training set was:")
+    print(evaluate(X_train, Y_train, W_0_1_contr, W_1_2_contr))
+    print(f"Best validation accuracy, in pass {best_pass_c}, was:")
+    print(best_val_acc_c)
+    print("Final validation accuracy was:")
+    print(val_hist_control[-1])
+
+    print("With Dropout:")
+    print("_____________")
+    print("Final training round's accuracy on the training set was:")
+    print(train_hist_dropout[-1])
+    print("Final weights' accuracy on the training set was:")
+    print(evaluate(X_train, Y_train, W_0_1_drop, W_1_2_drop))
+    print(f"Best validation accuracy, in pass {best_pass_d}, was:")
+    print(best_val_acc_d)
+    print("Final validation accuracy was:")
+    print(val_hist_dropout[-1])
+
+
+
 
     # Find the best validation accuracy
 #    best_iteration = np.argmax(val_hist) + 1
@@ -87,10 +115,10 @@ if __name__ == "__main__":
 #    print(f"Validation accuracy peaked at iteration {best_iteration} with accuracy {best_val_acc:.4f}")
 
     # ---- Plot ----
-    plt.plot(range(1, iterations + 1), train_hist_dropout, label="Training Accuracy with Dropout")
-    plt.plot(range(1, iterations + 1), val_hist_dropout, label="Validation Accuracy with Dropout")
     plt.plot(range(1, iterations + 1), train_hist_control, label="Training Accuracy without Dropout")
     plt.plot(range(1, iterations + 1), val_hist_control, label="Validation Accuracy without Dropout")
+    plt.plot(range(1, iterations + 1), train_hist_dropout, label="Training Accuracy with Dropout")
+    plt.plot(range(1, iterations + 1), val_hist_dropout, label="Validation Accuracy with Dropout")
 
     plt.xlabel("Iteration")
     plt.ylabel("Accuracy")
