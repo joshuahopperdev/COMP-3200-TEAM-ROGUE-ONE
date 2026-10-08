@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from data import load_mnist, one_hot
 
 (X_train, y_train), (X_test, y_test) = load_mnist()
@@ -65,5 +66,20 @@ def train(X_train, Y_train, X_val, Y_val, iterations=350):
 if __name__ == "__main__":
     W_0_1, W_1_2, train_hist, val_hist = train(X_train, Y_train, X_val, Y_val, iterations)
 
-    best_iteration = np.argmax(val_hist)
-    print(f"Validation accuracy peaked at iteration {best_iteration}")
+    # Find the best validation accuracy
+    best_iteration = np.argmax(val_hist) + 1
+    best_val_acc = val_hist[best_iteration - 1]
+    print(f"Validation accuracy peaked at iteration {best_iteration} with accuracy {best_val_acc:.4f}")
+
+    # ---- Plot ----
+    plt.plot(range(1, iterations + 1), train_hist, label="Training Accuracy")
+    plt.plot(range(1, iterations + 1), val_hist, label="Validation Accuracy")
+
+    plt.xlabel("Iteration")
+    plt.ylabel("Accuracy")
+    plt.title("Training vs Validation Accuracy")
+    plt.legend()
+    plt.grid(True)
+
+    plt.savefig("curves_part1.png")
+    plt.show()
