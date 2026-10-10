@@ -7,15 +7,6 @@ from data import load_mnist, one_hot
 X_val, y_val = X_train[1000:2000], one_hot(y_train[1000:2000])
 X_train, y_train = X_train[:1000], one_hot(y_train[:1000])
 
-def evaluate(X, Y, W_0_1, W_1_2):
-    correct = 0
-    for i in range(len(X)):
-        layer_1 = relu(X[i:i+1].dot(W_0_1))
-        layer_2 = layer_1.dot(W_1_2)
-        correct += int(np.argmax(layer_2) == np.argmax(Y[i]))
-    
-    return correct / len(X)
-
 def test_part_1_overfitting():
     try:
         from part1_memorize import train
@@ -25,7 +16,7 @@ def test_part_1_overfitting():
 iterations=50)
 
     assert (train_hist[-1] > 0.95), f"Part 1: final training accuracy should be greater than 0.95; final training accuracy was {train_hist[-1]}"
-    assert (train_hist[-1] - val_hist[-1] > 0.1), f"Part 1: inal training accuracy should be at least 0.1 greater than final validation accuracy; final difference was {train_hist[-1]-val_hist[-1]}"
+    assert (train_hist[-1] - val_hist[-1] > 0.1), f"Part 1: final training accuracy should be at least 0.1 greater than final validation accuracy; final difference was {train_hist[-1]-val_hist[-1]}"
 
 
 def test_parts_1234_no_test_leakage():
@@ -47,16 +38,26 @@ def test_parts_1234_no_test_leakage():
     train_4_source = inspect.getsource(train_4)
 
     # follows assignment as written, but will fail if any comment anywhere
-    # contains the word "test"....
-    assert (not ("test" in train_1_sig)), "Part 1's signature contains the word \"test\""
-    assert (not ("test" in train_1_source)), "Part 1's source contains the word \"test\""
-    assert (not ("test" in train_2_sig)), "Part 2's signature contains the word \"test\""
-    assert (not ("test" in train_2_source)), "Part 2's source contains the word \"test\""
-    assert (not ("test" in train_3_sig)), "Part 3's signature contains the word \"test\""
-    assert (not ("test" in train_3_source)), "Part 3's source contains the word \"test\""
-    assert (not ("test" in train_4_sig)), "Part 4's signature contains the word \"test\""
-    assert (not ("test" in train_4_source)), "Part 4's source contains the word \"test\""
-    
+    # contains the word "X_test" or "y_test"....
+    assert (not ("X_test" in str(train_1_sig))), "Part 1's signature contains the word \"X_test\""
+    assert (not ("X_test" in str(train_1_source))), "Part 1's source contains the word \"X_test\""
+    assert (not ("X_test" in str(train_2_sig))), "Part 2's signature contains the word \"X_test\""
+    assert (not ("X_test" in str(train_2_source))), "Part 2's source contains the word \"X_test\""
+    assert (not ("X_test" in str(train_3_sig))), "Part 3's signature contains the word \"X_test\""
+    assert (not ("X_test" in str(train_3_source))), "Part 3's source contains the word \"X_test\""
+    assert (not ("X_test" in str(train_4_sig))), "Part 4's signature contains the word \"X_test\""
+    assert (not ("X_test" in str(train_4_source))), "Part 4's source contains the word \"X_test\""
+
+
+    assert (not ("y_test" in str(train_1_sig))), "Part 1's signature contains the word \"y_test\""
+    assert (not ("y_test" in str(train_1_source))), "Part 1's source contains the word \"y_test\""
+    assert (not ("y_test" in str(train_2_sig))), "Part 2's signature contains the word \"y_test\""
+    assert (not ("y_test" in str(train_2_source))), "Part 2's source contains the word \"y_test\""
+    assert (not ("y_test" in str(train_3_sig))), "Part 3's signature contains the word \"y_test\""
+    assert (not ("y_test" in str(train_3_source))), "Part 3's source contains the word \"y_test\""
+    assert (not ("y_test" in str(train_4_sig))), "Part 4's signature contains the word \"y_test\""
+    assert (not ("y_test" in str(train_4_source))), "Part 4's source contains the word \"y_test\""
+
 
 def test_part_2_best_early_stopping():
     try:
@@ -70,7 +71,7 @@ def test_part_2_best_early_stopping():
 
     W_0_1, W_1_2, train_hist, val_hist = train_early_stopping(X_train, y_train, X_val, y_val, iterations=60)
     forward_pass = evaluate(X_val, y_val, W_0_1, W_1_2)
-    assert np.allclose(forward_pass, np.amax(val_hist), 1e-9), f"Part 2's returned weights do not produce the same value as val_hist's best value: {forward_pass} vs {np.amax(val_hist)}"
+    assert np.allclose(forward_pass, np.amax(val_hist), atol=1e-9), f"Part 2's returned weights do not produce the same value as val_hist's best value: {forward_pass} vs {np.amax(val_hist)}"
 
 def test_part_3_dropout_improves():
     try:
