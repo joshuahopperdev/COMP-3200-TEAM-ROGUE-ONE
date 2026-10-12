@@ -75,31 +75,48 @@ def test_part_2_best_early_stopping():
 
 def test_part_3_dropout_improves():
     try:
-        from part3_dropout import 
-    except ImportError:
-        raise ImportError("")
-
-def test_part_3_correct_dropout():
+        from part3_dropout import train_dropout
+    except ImportError as e:
+        raise ImportError(f"Error loading train_dropout from part 3. {e}")
     try:
-        from part3_dropout import 
-    except ImportError:
-        raise ImportError("")
+        from part1_memorize import evaluate
+    except ImportError as e:
+        raise ImportError(f"Error loading evaluate (helper function) from part 1. {e}")
 
-def test_correct_early_stopping_time():
-    try:
-        from part2_early_stopping import 
-    except ImportError:
-        raise ImportError("")
+    W_0_1_drop, W_1_2_drop, _, _ = train_dropout(X_train, y_train, X_val, y_val, iterations = 50, dropout=True)
+    W_0_1_ctrl, W_1_2_ctrl, _, _ = train_dropout(X_train, y_train, X_val, y_val, iterations = 50, dropout=False)
+
+    drop_train_acc = evaluate(X_train, y_train, W_0_1_drop, W_1_2_drop)
+    drop_val_acc = evaluate(X_val, y_val, W_0_1_drop, W_1_2_drop)
+    ctrl_train_acc = evaluate(X_train, y_train, W_0_1_ctrl, W_1_2_ctrl)
+    ctrl_val_acc = evaluate(X_val, y_val, W_0_1_ctrl, W_1_2_ctrl)
+
+    assert (abs(drop_train_acc - drop_val_acc) < abs(ctrl_train_acc - ctrl_val_acc)), f"Part 3's dropout function does not reduce the difference between best weights' training accuracy and validation accuracy."
     
 
-def test_correct_set_splitting():
+def test_apart_3_correct_dropout():
     try:
-        from part1_memorize import 
-        from part2_early_stopping import 
-        from part3_dropout import 
-        from part4_batching import 
-    except ImportError:
-        raise ImportError("")
+        from part3_dropout import dropout_step
+    except ImportError as e:
+        raise ImportError(f"Error loading dropout_step from part 3. {e}")
+    input = np.array([[1.0, 2.0, 3.0]])
+    target = np.array(5.0)
+    orig_W_0_1 = np.array([[4.0, 5.0, 6.0], [5.0, 7.0, 9.0], [2.0, 2.0, 2.0]])
+    W_0_1 = np.array([[4.0, 5.0, 6.0], [5.0, 7.0, 9.0], [2.0, 2.0, 2.0]])
+    W_1_2 = np.array([4.0, 2.0, 1.0])
+    mask = np.array([[0.0, 1.0, 0.0], [1.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
+    alpha = 0.05
+    dropout_step(input, target, W_0_1, W_1_2, mask, alpha)
+    assert ((not W_0_1 == orig_W_0_1) == mask), "The set of modified weights is not the same as the mask."
 
 
-def test_unstopped_works():
+if __name__ == "__main__":
+    tests = [name for name in dir() if name.startswith('test_')]
+    for test_name in sorted(tests):
+        test_func = globals()[test_name]
+        try:
+            test_func()
+            print(f' PASS: {test_name}')
+        except AssertionError as e:
+            print(f' FAIL: {test_name} -- {e}')
+
