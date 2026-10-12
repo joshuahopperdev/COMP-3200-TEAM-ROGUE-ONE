@@ -81,5 +81,5 @@ if __name__ == "__main__":
     plt.legend()
     plt.grid(True)
 
-    plt.savefig("curves_part1.png")
+    plt.savefig("week8/curves_part1.png")
     plt.show()
