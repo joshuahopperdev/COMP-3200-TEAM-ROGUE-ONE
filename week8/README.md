@@ -40,6 +40,12 @@ of one at a time with an update.
 ## Unit Testing
 
 # Nathanael
+ PASS: test_part_1_overfitting
+ PASS: test_part_2_best_early_stopping
+ PASS: test_part_3_correct_dropout
+ PASS: test_part_3_dropout_improves
+ PASS: test_parts_1234_no_test_leakage
 
+ All of the tests passed after a fix for part 3. 
 
 
