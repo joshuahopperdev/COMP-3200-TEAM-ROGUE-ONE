@@ -94,20 +94,21 @@ def test_part_3_dropout_improves():
     assert (abs(drop_train_acc - drop_val_acc) < abs(ctrl_train_acc - ctrl_val_acc)), f"Part 3's dropout function does not reduce the difference between best weights' training accuracy and validation accuracy."
     
 
-def test_apart_3_correct_dropout():
+def test_part_3_correct_dropout():
     try:
         from part3_dropout import dropout_step
     except ImportError as e:
         raise ImportError(f"Error loading dropout_step from part 3. {e}")
-    input = np.array([[1.0, 2.0, 3.0]])
-    target = np.array(5.0)
+    layer_0 = np.array([[1.0, 2.0, 3.0]])
+    target = np.array([[5.0]])
     orig_W_0_1 = np.array([[4.0, 5.0, 6.0], [5.0, 7.0, 9.0], [2.0, 2.0, 2.0]])
     W_0_1 = np.array([[4.0, 5.0, 6.0], [5.0, 7.0, 9.0], [2.0, 2.0, 2.0]])
-    W_1_2 = np.array([4.0, 2.0, 1.0])
-    mask = np.array([[0.0, 1.0, 0.0], [1.0, 1.0, 0.0], [0.0, 0.0, 1.0]])
+    W_1_2 = np.array([[4.0], [2.0], [1.0]])
+    mask = np.array([0.0, 1.0, 0.0])
     alpha = 0.05
-    dropout_step(input, target, W_0_1, W_1_2, mask, alpha)
-    assert ((not W_0_1 == orig_W_0_1) == mask), "The set of modified weights is not the same as the mask."
+    dropout_step(layer_0, target, W_0_1, W_1_2, mask, alpha)
+    modified_columns = np.any(W_0_1 != orig_W_0_1, axis=0)
+    assert np.array_equal(modified_columns, mask.squeeze() != 0), "The set of modified weights is not the same as the mask."
 
 
 if __name__ == "__main__":
