@@ -82,9 +82,6 @@ def evaluate(X, y, W_0_1, W_1_2, hidden_f=tanh):
 def train_forms(X_train, y_train, X_val, y_val, X_test, y_test, alpha = 0.005, iterations=350, batch_size=100):
     np.random.seed(1)
 
-    W_0_1 = 0.2 * np.random.random((784, hidden_size)) - 0.1
-    W_1_2 = 0.2 * np.random.random((hidden_size, 10)) - 0.1
-
     val_hist = []
 
     for it in range(iterations):
