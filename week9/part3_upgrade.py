@@ -79,34 +79,45 @@ def evaluate(X, y, W_0_1, W_1_2, hidden_f=tanh):
 
 
 
-def train_forms(X_train, y_train, X_val, y_val, X_test, y_test, alpha = 0.005, iterations=350, batch_size=100):
+def train_forms(X_train, y_train, X_val, y_val, alpha = 0.005, epochs=350, batch_size=100):
     np.random.seed(1)
 
     val_hist = []
 
-    for it in range(iterations):
+    # For each epoch...
+    for _ in range(epochs):
 
         # note that this discards incomplete batches, e.g. 
         # batch size 100, total size 1079 will ditch the
         # last 79 entries
+
+        # for each mini-batch...
         for i in range(len(X_train) // batch_size):
+            # figure out the bounds of that mini-batch...
             start, end = i * batch_size, (i+1) * batch_size
-            # ---- Forward ----
-            layer_0 = X_train[start:end]
+
+            # build a mask for that mini-batch...
             mask = np.random.randint(2, size=hidden_size) # ~50% ones, ~50% zeros
+
+            # and chuck it into our helper function that does everything for us.
             train_step(X_train[start:end], y_train[start:end], W_0_1, W_1_2, mask, alpha, tanh, tanh_deriv)
 
 
 
-
+        # After that epoch, calculate accuracy on the new weights and record it
         val_hist.append(evaluate(X_val, y_val, W_0_1, W_1_2))
 
-        # print(f"Iteration {it+1}/{iterations} - Train Acc: {evaluate(X_train, y_train, W_0_1, W_1_2):.4f}, Val Acc: {evaluate(X_val, y_val, W_0_1, W_1_2):.4f}")
+        # print(f"Epoch {it+1}/{epoch} - Train Acc: {evaluate(X_train, y_train, W_0_1, W_1_2):.4f}, Val Acc: {evaluate(X_val, y_val, W_0_1, W_1_2):.4f}")
     return W_0_1, W_1_2, val_hist
 
 if __name__ == "__main__":
-    W_0_1_batch, W_1_2_batch, val_hist_batch = train_forms(X_train, y_train, X_val, y_val, X_test, y_test, alpha, epochs, batch_size)
+    # run the training!
+    W_0_1_batch, W_1_2_batch, val_hist_batch = train_forms(X_train, y_train, X_val, y_val, alpha, epochs, batch_size)
+
+    # check it on our test set!
     final_test_score = evaluate(X_test, y_test, W_0_1_batch, W_1_2_batch)
+
+    # And print that out!
     print(f"Final score after {epochs} epochs on the test set: {final_test_score}")
 
 
