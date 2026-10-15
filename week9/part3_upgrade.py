@@ -126,5 +126,5 @@ if __name__ == "__main__":
     plt.legend()
     plt.grid(True)
 
-    plt.savefig("upgrade_plot.png")
+    plt.savefig("week9/upgrade_plot.png")
     plt.show()
