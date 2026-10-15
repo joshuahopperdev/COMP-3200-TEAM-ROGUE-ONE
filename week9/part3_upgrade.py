@@ -37,9 +37,6 @@ alpha, hidden_f=tanh, hidden_d=tanh_deriv):
     layer_1 *= mask * 2
 
     # calculate layer 2, convert from log probs to full probs
-    # note that we don't subtract the largest value from all values
-    # first, so we're not super confident that we won't get any 
-    # infinities
     layer_2 = softmax(layer_1 @ W_1_2)
 
     # count how many are in the batch so we can divide by that much
