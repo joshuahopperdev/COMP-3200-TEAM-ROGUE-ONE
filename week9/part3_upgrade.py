@@ -80,7 +80,6 @@ def evaluate(X, y, W_0_1, W_1_2, hidden_f=tanh):
 
 
 def train_forms(X_train, y_train, X_val, y_val, alpha = 0.005, epochs=350, batch_size=100):
-    np.random.seed(1)
 
     val_hist = []
 
@@ -108,14 +107,14 @@ def train_forms(X_train, y_train, X_val, y_val, alpha = 0.005, epochs=350, batch
         val_hist.append(evaluate(X_val, y_val, W_0_1, W_1_2))
 
         # print(f"Epoch {it+1}/{epoch} - Train Acc: {evaluate(X_train, y_train, W_0_1, W_1_2):.4f}, Val Acc: {evaluate(X_val, y_val, W_0_1, W_1_2):.4f}")
-    return W_0_1, W_1_2, val_hist
+    return val_hist
 
 if __name__ == "__main__":
     # run the training!
-    W_0_1_batch, W_1_2_batch, val_hist_batch = train_forms(X_train, y_train, X_val, y_val, alpha, epochs, batch_size)
+    val_hist_batch = train_forms(X_train, y_train, X_val, y_val, alpha, epochs, batch_size)
 
     # check it on our test set!
-    final_test_score = evaluate(X_test, y_test, W_0_1_batch, W_1_2_batch)
+    final_test_score = evaluate(X_test, y_test, W_0_1, W_1_2)
 
     # And print that out!
     print(f"Final score after {epochs} epochs on the test set: {final_test_score}")
