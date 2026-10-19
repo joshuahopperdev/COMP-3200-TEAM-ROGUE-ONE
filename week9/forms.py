@@ -28,7 +28,7 @@ def relu_deriv(out):
 def softmax(z):  # z.shape == (batch, k)
     z = z - np.max(z, axis=1, keepdims=True)  # subtract row max
     exp_z = np.exp(z)  # exp(onentiate)
-    return exp_z / exp_z.sum(axis=1, keepdims=True)  # divide by row sum row-sum
+    return exp_z / np.sum(exp_z, axis=1, keepdims=True)  # divide by row sum
 
 
 if __name__ == "__main__":
