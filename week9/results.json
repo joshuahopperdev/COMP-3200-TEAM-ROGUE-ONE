@@ -1,0 +1,9 @@
+{
+  "validation": {
+    "tanh": 0.876,
+    "relu": 0.88,
+    "sigmoid": 0.843
+  },
+  "part3_validation": 0.878,
+  "part3_test_accuracy": 0.8661
+}
