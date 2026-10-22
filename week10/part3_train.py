@@ -1,7 +1,7 @@
 import numpy as np
 from data import load_mnist, one_hot
 from forms import tanh, tanh_deriv, softmax
-from conv import cnn_forward
+from conv import get_patches, cnn_forward
 
 # Load MNIST dataset as 3 sets: 1000-long training set, 1000-long validation set,
 # and unknown-length test set.
@@ -15,12 +15,35 @@ alpha, epochs, batch_size = (0.02, 300, 128)
 
 
 def train_step(layer_0, Y_batch, kernels, W_1_2, mask, alpha):
-    layer_1, layer_2, slope = cnn_forward(layer_0, kernels, W_1_2, use_mask = True, generate_mask = False, mask = mask)
+
+    flat_patches, _ = get_patches(layer_0.reshape(layer_0.shape[0], 28, 28))
+
+    n = layer_0.shape[0]
+    kernel_out = flat_patches.dot(kernels)
+
+    layer_1 = tanh(kernel_out.reshape(n, 676 * 16))
+
+    slope = tanh_deriv(layer_1)
+
+    layer_1 *= mask * 2
+
+    layer_2 = softmax(layer_1.dot(W_1_2))
+
+    delta_2 = (layer_2 - Y_batch) / layer_0.shape[0] # batch average
+    delta_1 = delta_2.dot(W_1_2.T) * slope # slope saved before the mask
+    delta_1 *= mask * 2 # forward was * mask * 2
+    W_1_2 -= alpha * layer_1.T.dot(delta_2)
+
+    delta_1_reshaped = delta_1.reshape(kernel_out.shape) # (batch*676, 16)
+    k_update = flat_patches.T.dot(delta_1_reshaped) # (9, 16)
+    kernels -= alpha * k_update
 
     
 def evaluate(layer_0, Y, kernels, W_1_2):
-    _, layer_2, _ = cnn_forward(layer_0, kernels, W_1_2, use_mask=False, generate_mask = False)
-    return np.mean(layer_2 = Y)
+    _, layer_2, _ = cnn_forward(layer_0.reshape(layer_0.shape[0], 28, 28), kernels, W_1_2, use_mask=False, generate_mask = False)
+    preds = np.argmax(layer_2, axis = 1)
+    trues = np.argmax(Y, axis = 1)
+    return np.mean(preds == trues)
 
 
 def cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size):
@@ -44,7 +67,7 @@ def cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size):
     return kernels, W_1_2
         
 
-
+cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size)
 
     
 
