@@ -25,7 +25,7 @@ def get_patches(layer):  # layer: (batch, 28, 28)
 # flat_patches by kernels gives a 50*676 x 16 output
 def cnn_forward(layer_0, kernels, W_1_2):
     # build a set of patches from layer_0
-    flat_patches = get_patches(layer_0)
+    flat_patches, _ = get_patches(layer_0)
     n = layer_0.shape[0]
     kernel_out = flat_patches.dot(kernels)
 
