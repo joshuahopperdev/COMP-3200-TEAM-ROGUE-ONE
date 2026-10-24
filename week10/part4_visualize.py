@@ -16,7 +16,7 @@ alpha, epochs, batch_size = (0.02, 300, 128)
 
 if __name__ == "__main__":
     kernels, weights = cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size)
-    print(f"Kernels:\n{kernels}")
+    #print(f"Kernels:\n{kernels}")
 
     # kernels_3x3 = []
     # for i in range(0,15):
@@ -38,9 +38,16 @@ if __name__ == "__main__":
         j.imshow(gray_pixels[i], cmap="gray", vmin=0, vmax=255)
         j.axis("off")
 
-    plt.show()
+    
     plt.savefig("kernels.png")
 
+    plt.show()
 
+"""
+The first image in the top left, is seemingly a light corner detection. Somewhat similar to the 8th(row 2 column 4)
+but lighter. Row 2, column 1 and row 3, column 4 are also very similar in nature. Row 4, column 1 and column 3 seem
+to be line horizontal and line vertical. There are at least 4 corner like detections, and an additional 2 that are 
+close but lighter versions. 
+"""
 
 
