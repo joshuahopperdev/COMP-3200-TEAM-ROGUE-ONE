@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from data import load_mnist, one_hot
 from forms import tanh, tanh_deriv, softmax
 from conv import get_patches, cnn_forward
@@ -17,6 +18,28 @@ if __name__ == "__main__":
     kernels, weights = cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size)
     print(f"Kernels:\n{kernels}")
 
+    # kernels_3x3 = []
+    # for i in range(0,15):
+    #     kernel = []
+    #     for j in range(0,8):
+    #         kernel.append(kernels[j][i])
+    #     kernels_3x3.append(kernel)
+
+    #filters = kernels.T.reshape(3, 3, 16)
+    filters = kernels.T.reshape(16, 3, 3)
+
+    figure, axis = plt.subplots(4, 4, figsize=(9, 9))
+
+    # Need 0-255
+    normalized_pixels = (filters - filters.min()) / (filters.max() - filters.min())
+    gray_pixels = (normalized_pixels * 255).astype(np.uint8)
+
+    for i, j in enumerate(axis.flat):
+        j.imshow(gray_pixels[i], cmap="gray", vmin=0, vmax=255)
+        j.axis("off")
+
+    plt.show()
+    plt.savefig("kernels.png")
 
 
 
