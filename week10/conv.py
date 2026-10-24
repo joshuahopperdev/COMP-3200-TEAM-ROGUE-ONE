@@ -23,7 +23,7 @@ def get_patches(layer):  # layer: (batch, 28, 28)
 # flat_patches will then be 50*676 x 9
 # and 16 kernels will be a 9 x 16 matrix, so multiplying
 # flat_patches by kernels gives a 50*676 x 16 output
-def cnn_forward(layer_0, kernels, W_1_2):
+def cnn_forward(layer_0, kernels, W_1_2, use_mask = True, generate_mask = True, mask = None):
     # build a set of patches from layer_0
     flat_patches, _ = get_patches(layer_0)
     n = layer_0.shape[0]
@@ -35,8 +35,10 @@ def cnn_forward(layer_0, kernels, W_1_2):
 
     slope = tanh_deriv(layer_1)
 
-    mask = np.random.randint(2, size=layer_1.shape)
-    layer_1 *= mask * 2
+    if generate_mask:
+        mask = np.random.randint(2, size=layer_1.shape)
+    if use_mask:
+        layer_1 *= mask * 2
 
     layer_2 = softmax(layer_1.dot(W_1_2))
 
