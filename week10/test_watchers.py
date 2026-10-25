@@ -16,11 +16,12 @@ def test_patch_shape():
     assert test2.shape == (16, 9), f"Input shape (1, 6, 6) -- expected (36, 9), got {test2.shape}"
     assert test3.shape == (2046 * 2046 * 50, 9), f"Input shape (50, 2048, 2048) -- expected (209305800, 9), got {test3.shape}"
 
-def non_test_patch_contents():
-    # TODO: figure out how to do patches
-    patches, _ = get_patches(truth)
+def test_patch_contents():
+    layer = rng.rand(10, 6, 6)
+    patch = layer[0, :3, :3].flatten()
+    patches, _ = get_patches(layer)
     first_patch = patches[0]
-    assert first_patch == truth_patch, f"First patch should be the top-left corner, got {first_patch}"
+    assert np.all(a == b for a, b in zip(first_patch, patch)), f"First patch should be the top-left corner -- expected {patch}, got {first_patch}"
 
 def test_forward_shape():
     # somehow get layer_1
@@ -51,13 +52,13 @@ def test_step():
     assert np.allclose(got, expected) or np.allclose(got, expected / 2)
 
 # NOTE: Anticipate signature and return value changes
-def non_test_learn():
+def test_learn():
     (X_train, y_train), _ = load_mnist()
     X_val, y_val = X_train[1000:2000], one_hot(y_train[1000:2000])
     X_train, y_train = X_train[:1000], one_hot(y_train[:1000])
-    val_acc = cnn_full_train(X_train, y_train, X_val, y_val,
+    _, _, val_acc = cnn_full_train(X_train, y_train, X_val, y_val,
                     alpha=0.2, epochs=30, batch_size=128)
-    assert val_acc[-1] > 0.75, f"Final validation accuracy should be comfortably above chance, got {val_acc}"
+    assert val_acc > 0.75, f"Final validation accuracy should be comfortably above chance, got {val_acc}"
 
 # Copied from other tests
 if __name__ == "__main__":
