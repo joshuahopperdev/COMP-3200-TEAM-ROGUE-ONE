@@ -110,7 +110,8 @@ def cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size):
             val_acc = evaluate(X_val, y_val, kernels, W_1_2)
             print(f"Epoch {ep}: Validation accuracy: {val_acc:.4f}")
 
-    return kernels, W_1_2
+    final_val_acc = evaluate(X_val, y_val, kernels, W_1_2)
+    return kernels, W_1_2, final_val_acc
         
 
 
