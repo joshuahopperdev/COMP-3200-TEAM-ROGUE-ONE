@@ -14,7 +14,7 @@ if __name__ == "__main__":
     X_test, y_test = X_test, one_hot(y_test)
     alpha, epochs, batch_size = (0.02, 300, 128)
 
-    kernels, weights = cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size)
+    kernels, weights, _ = cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size)
 
     # get the shape ready for 3x3
     filters = kernels.T.reshape(16, 3, 3)
