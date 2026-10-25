@@ -10,11 +10,11 @@ rng = np.random.RandomState(0)
 def test_patch_shape():
     test1, _ = get_patches(rng.randn(100, 28, 28))
     test2, _ = get_patches(rng.randn(1, 6, 6))
-    test3, _ = get_patches(rng.randn(50, 2048, 2048))
+    test3, _ = get_patches(rng.randn(50, 256, 256))
 
     assert test1.shape == (67600, 9), f"Input shape (100, 28, 28) -- expected shape (67600, 9), got {test1.shape}"
     assert test2.shape == (16, 9), f"Input shape (1, 6, 6) -- expected (16, 9), got {test2.shape}"
-    assert test3.shape == (2046 * 2046 * 50, 9), f"Input shape (50, 2048, 2048) -- expected (209305800, 9), got {test3.shape}"
+    assert test3.shape == (254 * 254 * 50, 9), f"Input shape (50, 256, 256) -- expected (3225800, 9), got {test3.shape}"
 
 def test_patch_contents():
     layer = rng.rand(10, 6, 6)
