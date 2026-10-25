@@ -57,7 +57,7 @@ def test_learn():
     X_val, y_val = X_train[1000:2000], one_hot(y_train[1000:2000])
     X_train, y_train = X_train[:1000], one_hot(y_train[:1000])
     _, _, val_acc = cnn_full_train(X_train, y_train, X_val, y_val,
-                    alpha=0.2, epochs=30, batch_size=128)
+                    alpha=0.2, epochs=30, batch_size=128, verbose=False)
     assert val_acc > 0.75, f"Final validation accuracy should be comfortably above chance, got {val_acc}"
 
 # Copied from other tests
