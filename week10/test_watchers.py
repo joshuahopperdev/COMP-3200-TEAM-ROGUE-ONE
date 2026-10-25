@@ -13,7 +13,7 @@ def test_patch_shape():
     test3, _ = get_patches(rng.randn(50, 2048, 2048))
 
     assert test1.shape == (67600, 9), f"Input shape (100, 28, 28) -- expected shape (67600, 9), got {test1.shape}"
-    assert test2.shape == (16, 9), f"Input shape (1, 6, 6) -- expected (36, 9), got {test2.shape}"
+    assert test2.shape == (16, 9), f"Input shape (1, 6, 6) -- expected (16, 9), got {test2.shape}"
     assert test3.shape == (2046 * 2046 * 50, 9), f"Input shape (50, 2048, 2048) -- expected (209305800, 9), got {test3.shape}"
 
 def test_patch_contents():
