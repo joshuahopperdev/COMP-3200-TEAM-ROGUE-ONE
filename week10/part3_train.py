@@ -86,7 +86,7 @@ def evaluate(layer_0, Y, kernels, W_1_2):
     return np.mean(preds == trues)
 
 
-def cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size):
+def cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size, verbose=True):
     # initialize random kernels and weights
     np.random.seed(1)
     kernels = 0.02 * np.random.random((9, 16)) - 0.01
@@ -106,7 +106,7 @@ def cnn_full_train(X_train, y_train, X_val, y_val, alpha, epochs, batch_size):
             # and run the training
             train_step(layer_0, y_batch, kernels, W_1_2, mask, alpha)
         # Every tenth epoch, print our accuracy.
-        if ep % 10 == 0:
+        if ep % 10 == 0 and verbose:
             val_acc = evaluate(X_val, y_val, kernels, W_1_2)
             print(f"Epoch {ep}: Validation accuracy: {val_acc:.4f}")
 

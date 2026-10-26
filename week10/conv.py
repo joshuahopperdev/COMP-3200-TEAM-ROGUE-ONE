@@ -38,9 +38,11 @@ def cnn_forward(layer_0, kernels, W_1_2, use_mask = True, generate_mask = True, 
     if generate_mask:
         mask = np.random.randint(2, size=layer_1.shape)
     if use_mask:
-        layer_1 *= mask * 2
+        masked_layer_1 = layer_1 * mask * 2
+    else:
+        masked_layer_1 = layer_1
 
-    layer_2 = softmax(layer_1.dot(W_1_2))
+    layer_2 = softmax(masked_layer_1.dot(W_1_2))
 
     return layer_1, layer_2, slope
 
