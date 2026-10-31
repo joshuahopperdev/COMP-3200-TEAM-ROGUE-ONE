@@ -5,7 +5,7 @@ def open_files():
     with open("data/labels.txt", "r", encoding="utf-8") as f:
         raw_labels = f.read().splitlines()
 
-    return raw_reviews, raw_reviews
+    return raw_reviews, raw_labels
 
 def tokenize_inputs():
     raw_reviews, raw_labels = open_files()
