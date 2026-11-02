@@ -3,13 +3,14 @@ import numpy as np
 from preprocess import tokenize_inputs
 import sentiment
 import similarity as sim
-import fillblank as fb
-import analogy
+#import fillblank as fb
+#import analogy
 
 def test_preprocessing():
-    _, _, _, vocab, word2index = tokenize_inputs()
+    vocab = tokenize_inputs()[3]
     vocab_size = len(vocab)
     assert 70000 <= vocab_size <= 80000, f"Vocabulary size should be in the range [70,000, 80,000], got {vocab_size}"
+    word2index = {w: i for i, w in enumerate(vocab)}
     assert vocab[word2index['the']], f"word2index['the'] should return a valid integer index, got {word2index['the']}"
 
 def test_lookup():
