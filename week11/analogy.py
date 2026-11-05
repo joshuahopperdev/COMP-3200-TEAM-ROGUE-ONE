@@ -19,12 +19,8 @@ def analogy(positive, negative, weights_0_1, word2index, k=5):
             if w not in positive + negative][:k]
 
 if __name__ == '__main__':
-    raw_reviews, _, labels, vocab = tokenize_inputs()[:4]
+    labels, vocab, _, dataset = tokenize_inputs()[2:]
     word2index = word_to_index(vocab)
-
-    # Make a list instead of a set to preserve order and repeat words
-    tokens = list(map(lambda s: list(s.split(" ")), raw_reviews))
-    dataset = [[word2index[w] for w in sent if w in word2index] for sent in tokens]
 
     np.random.seed(1), random.seed(1)
     random.shuffle(dataset)  # Trask shuffles the reviews once
@@ -39,28 +35,28 @@ if __name__ == '__main__':
         W_0_1,
         word2index
     )
-    print(f"terrible + good - bad = {analogies}")
-    """The results of terrible + good - bad are:
-    1. mediocre
-    2. stellar
-    3. lousy
-    4. pleasant
-    5. fine
+    print(f"terrible - bad + good = {analogies}")
+    """The results of terrible - bad + good are:
+    1. fine
+    2. superb
+    3. brilliant
+    4. fantastic
+    5. wonderful
     """
 
     our_analogies = analogy(
-        ['light', 'cheery'],
-        ['dark'],
+        ['cheery', 'dark'],
+        ['light'],
         W_0_1,
         word2index
     )
-    print(f"light + cheery - dark = {our_analogies}")
-    """The results of light + cheery - dark are:
-    1. snap
-    2. queue
-    3. stead
-    4. hinges
-    5. strap
+    print(f"cheery - light + dark = {our_analogies}")
+    """The results of cheery - light + dark are:
+    1. therein
+    2. revolutionary
+    3. monica
+    4. deol
+    5. frozen
     """
 
     other_analogy = analogy(
@@ -72,8 +68,8 @@ if __name__ == '__main__':
     print(f"actor - man + woman = {other_analogy}")
     """The results of actor + woman - man are:
     1. actress
-    2. assassin
-    3. comedian
-    4. englishman
-    5. ordeal
+    2. artist
+    3. antagonist
+    4. assassin
+    5. parker
     """
