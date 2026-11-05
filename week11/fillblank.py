@@ -11,7 +11,6 @@ raw_reviews, raw_labels, new_labels, vocab, input_dataset = tokenize_inputs()
 word2index = word_to_index(vocab)
 new_tokens = list(map(lambda s: list(s.split(" ")), raw_reviews))
 new_input_dataset = [list([word2index[w] for w in sent if w in word2index]) for sent in new_tokens]
-concatenated = np.concatenate(new_input_dataset)
 
 
 np.random.seed(1); random.seed(1)
@@ -23,6 +22,7 @@ weights_1_2 = np.random.rand(len(vocab), hidden_size) * 0 # zeros
 layer_2_target = np.zeros(neg + 1); layer_2_target[0] = 1
 
 def train_fill_blanks(weights_0_1, weights_1_2, dataset, alpha, iterations, window, neg, reassuring = False):
+    concatenated = np.concatenate(new_input_dataset)
     for it in range(iterations):
         for i, review in enumerate(dataset):
             if reassuring:
