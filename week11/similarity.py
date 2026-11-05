@@ -13,7 +13,7 @@ def similar(weights_0_1, word2index, target='beautiful'):
     return scores.most_common(10)
 
 if __name__ == "__main__":
-    raw_reviews, raw_labels, new_labels, vocab, input_dataset = tokenize_inputs()
+    raw_reviews, raw_labels, new_labels, vocab, input_dataset, input_dataset_list = tokenize_inputs()
 
     weights_0_1, weights_1_2, word2index, vocab = sentiment(vocab, new_labels, input_dataset, 100, 0.04, 2)
 
