@@ -22,7 +22,7 @@ def train_fill_blanks(weights_0_1, weights_1_2, dataset, alpha, iterations, wind
     word2index = word_to_index(vocab)
     concatenated = np.concatenate(dataset)
     for it in range(iterations):
-        for i, review in enumerate(dataset[:1000]):
+        for i, review in enumerate(dataset):
             if reassuring:
                 if i % 1000 == 0:
                     print("Iteration: ", it, "Review: ", i)
