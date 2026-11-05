@@ -7,14 +7,11 @@ from sentiment import word_to_index
 
 
 
-raw_reviews, raw_labels, new_labels, vocab, input_dataset = tokenize_inputs()
-word2index = word_to_index(vocab)
-new_tokens = list(map(lambda s: list(s.split(" ")), raw_reviews))
-new_input_dataset = [list([word2index[w] for w in sent if w in word2index]) for sent in new_tokens]
+raw_reviews, raw_labels, new_labels, vocab, input_dataset, input_dataset_list = tokenize_inputs()
 
 
 np.random.seed(1); random.seed(1)
-random.shuffle(new_input_dataset) # Trask shuffles the reviews once
+random.shuffle(input_dataset_list) # Trask shuffles the reviews once
 alpha, iterations = 0.05, 2
 hidden_size, window, neg = 50, 2, 5
 weights_0_1 = (np.random.rand(len(vocab), hidden_size) - 0.5) * 0.2
@@ -22,9 +19,10 @@ weights_1_2 = np.random.rand(len(vocab), hidden_size) * 0 # zeros
 layer_2_target = np.zeros(neg + 1); layer_2_target[0] = 1
 
 def train_fill_blanks(weights_0_1, weights_1_2, dataset, alpha, iterations, window, neg, reassuring = False):
-    concatenated = np.concatenate(new_input_dataset)
+    word2index = word_to_index(vocab)
+    concatenated = np.concatenate(dataset)
     for it in range(iterations):
-        for i, review in enumerate(dataset):
+        for i, review in enumerate(dataset[:1000]):
             if reassuring:
                 if i % 1000 == 0:
                     print("Iteration: ", it, "Review: ", i)
@@ -46,7 +44,8 @@ def train_fill_blanks(weights_0_1, weights_1_2, dataset, alpha, iterations, wind
     return weights_0_1, weights_1_2
 
 if __name__ == "__main__":
-    train_fill_blanks(weights_0_1, weights_1_2, new_input_dataset, alpha, iterations, window, neg, reassuring = True)
+    word2index = word_to_index(vocab)
+    train_fill_blanks(weights_0_1, weights_1_2, input_dataset_list, alpha, iterations, window, neg, reassuring = True)
     print(similar(weights_0_1, word2index, "terrible"))
     print(similar(weights_0_1, word2index, "beautiful"))
     print(similar(weights_0_1, word2index, "actor"))
