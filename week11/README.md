@@ -28,5 +28,9 @@ to __. Thanks to the vectorization, we can perform computations to get compariso
 in cases like this.
 
 # Testing
-
+PASS: test_lookup
+PASS: test_neg_sampling_shape
+PASS: test_preprocessing
+PASS: test_sentiment
+PASS: test_similarity
 
