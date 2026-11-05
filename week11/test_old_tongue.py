@@ -4,8 +4,6 @@ from preprocess import tokenize_inputs, open_files, regularize_labels
 from sentiment import word_to_index, sentiment
 from forms import sigmoid
 from similarity import similar
-#import fillblank as fb
-#import analogy
 
 def test_preprocessing():
     vocab = tokenize_inputs()[3]
