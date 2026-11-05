@@ -23,7 +23,7 @@ def test_lookup():
         f" expected {weights_0_1[2] + weights_0_1[5] + weights_0_1[9]}.")
 
 def test_sentiment():
-    labels, vocab, input_dataset = tokenize_inputs()[2:]
+    labels, vocab, input_dataset, _ = tokenize_inputs()[2:]
     weights_0_1, weights_1_2, _, _ = sentiment(vocab, labels, input_dataset, 100, 0.04, 4, eval_test_size=24700, verbose=False)
     test_correct = 0
     test_start = len(input_dataset) - 100
@@ -41,7 +41,7 @@ def test_sentiment():
     assert test_accuracy > 0.6, f"Test accuracy should be comfortably above chance, expected > 0.6, got {test_accuracy}"
 
 def test_similarity():
-    _, _, labels, vocab, input_dataset = tokenize_inputs()
+    _, _, labels, vocab, input_dataset, _ = tokenize_inputs()
     weights_0_1, _, word2index, _ = sentiment(vocab, labels, input_dataset, 100, 0.04, 2, eval_test_size=24700, verbose=False)
 
     words = ["beautiful", "terrible", "actor"]
@@ -51,7 +51,7 @@ def test_similarity():
         assert first_word == w and first_dist == 0, f"A word should be closest to itself, expected ({w}, 0), got ({common_scores[0]})"
 
 def test_neg_sampling_shape():
-    _, _, _, vocab, input_dataset = tokenize_inputs()
+    _, _, _, vocab, input_dataset, _ = tokenize_inputs()
     concatenated = np.concatenate(input_dataset)
 
     np.random.seed(1)
