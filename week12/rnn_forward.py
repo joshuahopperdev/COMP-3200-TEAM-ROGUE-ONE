@@ -28,12 +28,12 @@ def perplexity(loss, length):
 if __name__ == "__main__":
     np.random.seed(1)
     embed_size = 10
-    raw_sentences, vocab, word2index, index2word, input_dataset, input_dataset_list = tokenize_inputs()
+    raw_sentences, vocab, word2index, index2word, input_dataset = tokenize_inputs(output_as_list = True)
     V = len(vocab)
     embed = (np.random.rand(V, embed_size) - 0.5) * 0.1
     recurrent = np.eye(embed_size)
     start = np.zeros(embed_size)
     decoder = (np.random.rand(embed_size, V) - 0.5) * 0.1
     one_hot = np.eye(V)
-    _, _, loss = predict(input_dataset[0][1:], start, decoder, recurrent, embed)
+    hiddens, preds, loss = predict(input_dataset[0][1:], start, decoder, recurrent, embed)
     print(perplexity(loss, len(input_dataset[0][1:])))
