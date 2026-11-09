@@ -45,10 +45,10 @@ def test_training_loss():
         train_step(
             sent, weights.start, weights.decoder, weights.recurrent, weights.embed, alpha, one_hot
         )
-    final_perplexity = train_step(
+    final_perplexity, _ = train_step(
         sent, weights.start, weights.decoder, weights.recurrent, weights.embed, alpha, one_hot
     )
-    assert initial_perplexity < final_perplexity, f"Perplexity must decrease over time, got final_perplexity={final_perplexity}, initial_perplexity={initial_perplexity}"
+    assert final_perplexity < initial_perplexity, f"Perplexity must decrease over 100 train steps, got final_perplexity={final_perplexity}, initial_perplexity={initial_perplexity}"
 
 def test_hidden_delta_sum():
     np.random.seed(1)
