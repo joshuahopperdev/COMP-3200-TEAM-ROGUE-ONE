@@ -6,7 +6,7 @@ from rnn_bptt import RNNW, bptt, train_step
 def test_preprocess():
     _, vocab, word2index = tokenize_inputs()[:3]
     assert len(vocab) == 82, f"Vocab length on first 1010 lines should be 82, got {len(vocab)}"
-    for word in ["garden", "john", "kitchen"]:
+    for word in ["garden.", "john", "kitchen."]:
         assert vocab[word2index[word]] == word, f"word2index must round-trip on {word}, got {vocab[word2index[word]]}"
 
 def test_softmax():
@@ -38,12 +38,12 @@ def test_training_loss():
     S, V = len(sent), len(vocab)
     alpha, one_hot = 0.005, np.eye(V)
     weights = RNNW(3, V)
-    old_perplexity, embed, recurrent, start, decoder = train_step(
-        sent, weights.start, weights.decoder, weights.embed, weights.recurrent, alpha, one_hot
+    old_perplexity, _ = train_step(
+        sent, weights.start, weights.decoder, weights.recurrent, weights.embed, alpha, one_hot
     )
     for _ in range(100):
-        new_perplexity = train_step(
-            sent, start, decoder, embed, recurrent, alpha, one_hot
+        new_perplexity, _ = train_step(
+            sent, weights.start, weights.decoder, weights.recurrent, weights.embed, alpha, one_hot
         )
         assert new_perplexity <= old_perplexity, f"Perplexity must decrease over time, got new_perplexity={new_perplexity}, old_perplexity={old_perplexity}"
         old_perplexity = new_perplexity
@@ -61,7 +61,7 @@ def test_hidden_delta_sum():
     d_h, d_o = layer['hidden_delta'], layer['output_delta']
     h_r = layers[i+1]['hidden_delta'].dot(weights.recurrent.T)
     h_d = d_o.dot(weights.decoder.T)
-    assert d_h == h_r + h_d, "Hidden delta must differ from output_delta.dot(decoder.T) alone"
+    assert np.all(d_h == h_r + h_d), "Hidden delta must differ from output_delta.dot(decoder.T) alone"
 
 if __name__ == "__main__":
     tests = [name for name in dir() if name.startswith("test_")]
