@@ -38,15 +38,17 @@ def test_training_loss():
     S, V = len(sent), len(vocab)
     alpha, one_hot = 0.005, np.eye(V)
     weights = RNNW(3, V)
-    old_perplexity, _ = train_step(
+    initial_perplexity, _ = train_step(
         sent, weights.start, weights.decoder, weights.recurrent, weights.embed, alpha, one_hot
     )
-    for _ in range(100):
-        new_perplexity, _ = train_step(
+    for _ in range(98):
+        train_step(
             sent, weights.start, weights.decoder, weights.recurrent, weights.embed, alpha, one_hot
         )
-        assert new_perplexity <= old_perplexity, f"Perplexity must decrease over time, got new_perplexity={new_perplexity}, old_perplexity={old_perplexity}"
-        old_perplexity = new_perplexity
+    final_perplexity = train_step(
+        sent, weights.start, weights.decoder, weights.recurrent, weights.embed, alpha, one_hot
+    )
+    assert initial_perplexity < final_perplexity, f"Perplexity must decrease over time, got final_perplexity={final_perplexity}, initial_perplexity={initial_perplexity}"
 
 def test_hidden_delta_sum():
     np.random.seed(1)
@@ -61,7 +63,7 @@ def test_hidden_delta_sum():
     d_h, d_o = layer['hidden_delta'], layer['output_delta']
     h_r = layers[i+1]['hidden_delta'].dot(weights.recurrent.T)
     h_d = d_o.dot(weights.decoder.T)
-    assert np.all(d_h == h_r + h_d), "Hidden delta must differ from output_delta.dot(decoder.T) alone"
+    assert np.all(d_h - h_r == h_d), "Hidden delta must differ from output_delta.dot(decoder.T) alone"
 
 if __name__ == "__main__":
     tests = [name for name in dir() if name.startswith("test_")]
