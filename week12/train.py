@@ -24,7 +24,7 @@ def train(alpha, iter, TRAIN_N, seed, sentances, vocab, word2indecies, indecies2
         # ---- back propagate (BPTT in Code, 3 of 3) ---- fills in the deltas
         # ---- update weights (The Weight Updates) ---- subtracts them
 
-        perplexity, _ = train_step(sent, weights.start, weights.decoder, weights.embed, weights.recurrent, alpha, one_hot)
+        perplexity, _ = train_step(sent, weights.start, weights.decoder, weights.recurrent, weights.embed, alpha, one_hot)
 
         if it % 1000 == 0:
             perplexity_log.append((it, perplexity))
