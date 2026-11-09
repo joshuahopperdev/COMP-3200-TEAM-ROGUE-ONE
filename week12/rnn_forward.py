@@ -24,30 +24,29 @@ def softmax(x):
 # multiple parameters rather than just using global variables, and by
 # returning two separate index-matched arrays for hiddens and preds.
 
-# Note: preds[k] is the guess for sent[k-1], made after seeing
-# sent[:k-1], everything up until that point. That is, preds[3]
+# Note: layers[k]['pred'] is the guess for sent[k-1], made after seeing
+# sent[:k-1], everything up until that point. That is, layers[3]['pred']
 # is the guess for what word will be sent[2], after feeding it
 # start*recurrence*recurrence, the embedding*recurrence of sent[0] 
 # and the embedding of sent[1].
 #
 # But the sentences we're feeding our predict() have the first
 # word lopped off for no reason (see below, in main() and later in train.py),
-# so preds[k] will be the guess for original_sentence[k], but without the 
-# information of the first word. E.g. preds[3] is the guess for
+# so layers[k]['pred'] will be the guess for original_sentence[k], but without the 
+# information of the first word. E.g. layers[3]['pred'] is the guess for
 # original_sentence[3], with only start*recurrence*recurrence*recurrence, 
 # the embedding*recurrence of original_sentence[1] and the embedding of 
 # original_sentence[2] and not the embedding*recurrence*recurrence of 
 # original_sentence[0] (because we lopped it off).
 def predict(sent, start, decoder, recurrent, embed):
-    hiddens = [start]
-    preds = [[]]
+    layers = [{'hidden': start}]
     loss = 0.0
 
     # for each word, sequentially:
     for t in range(len(sent)):
         # our current hidden layer is the last
         # entry in hiddens
-        h_prev = hiddens[-1]
+        h_prev = layers[-1]['hidden']
         # our prediction is the softmax of our
         # hidden layer times the decoder
         pred = softmax(h_prev.dot(decoder))
@@ -67,9 +66,8 @@ def predict(sent, start, decoder, recurrent, embed):
 
         # stick 'em on! See comments above predict()
         # for where what goes
-        hiddens.append(h_new)
-        preds.append(pred)
-    return hiddens, preds, loss
+        layers.append({'pred': pred, 'hidden': h_new})
+    return layers, loss
 
 # perplexity = e^(average loss)
 def perplexity(loss, length):
@@ -95,5 +93,5 @@ if __name__ == "__main__":
     # The assignment spec is clear, we are to use this, it gets the same
     # perplexity for the same seed as Dr. Faith does. It calls it "Trask's convention", 
     # but we can find no reason for this convention.
-    hiddens, preds, loss = predict(input_dataset[0][1:], start, decoder, recurrent, embed)
+    _, loss = predict(input_dataset[0][1:], start, decoder, recurrent, embed)
     print(perplexity(loss, len(input_dataset[0][1:])))
