@@ -12,7 +12,7 @@ def test_preprocess():
 def test_softmax():
     for size in [3, 6, 14, 23]:
         x = np.random.randn(size)
-        assert np.sum(softmax(x)) - 1 <= 1e-9, f"Sum of any softmaxed vector must be within 1e-9 of 1, got {np.sum(softmax(x))}"
+        assert np.abs(np.sum(softmax(x)) - 1) <= 1e-9, f"Sum of any softmaxed vector must be within 1e-9 of 1, got {np.sum(softmax(x))}"
     zs = np.zeros(np.random.randint(10))
     softzs = softmax(zs)
     assert np.all(softz == softzs[0] for softz in softzs), f"Entries of a softmaxed zero vector are uniform, got {softzs}"
