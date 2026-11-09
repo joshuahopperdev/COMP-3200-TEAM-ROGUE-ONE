@@ -13,7 +13,9 @@ def bptt(sent, layers, weights, one_hot):
     # Layer 0 doesn't have a pred, so leave it out of the loop
     # The -1:0:-1 slice goes in reverse iterating through the range
     # [last..0) -- the last layer down to but not including the first layer
-    for layer_idx, layer in enumerate(layers[-1:0:-1]):
+    for i, layer in enumerate(layers[-1:0:-1]):
+        # i starts from 0, so we need to calculate the distance from the end
+        layer_idx = len(layers) - i - 1
         target = sent[layer_idx - 1]
         layer['output_delta'] = layer['pred'] - one_hot[target]
         new_hidden_delta = layer['output_delta'].dot(weights.decoder.T)
@@ -21,7 +23,7 @@ def bptt(sent, layers, weights, one_hot):
         if layer_idx == len(layers) - 1:
             layer['hidden_delta'] = new_hidden_delta
         else:
-            layer['hidden_delta'] = new_hidden_delta + layers[layer_idx + 1]['hidden_delta'].dot(weights.reccurent.T)
+            layer['hidden_delta'] = new_hidden_delta + layers[layer_idx + 1]['hidden_delta'].dot(weights.recurrent.T)
 
     # Get the hidden_delta for layer 0 so the walk is complete; this must necessarily
     # be after the loop so layer 1's hidden_delta exists
@@ -92,16 +94,16 @@ class RNNW:
 
 if __name__ == "__main__":
     np.random.seed(1)
-    vocab, _, _, data = tokenize_inputs()[1:]
+    vocab, word2index, _, data = tokenize_inputs()[1:]
     weights = RNNW(embed_size = 10, vocab_size = len(vocab))
     sent = data[0][1:]
     one_hot = np.eye(len(vocab))
-    layers = predict(words2indices(sent), weights.start, weights.decoder, weights.embed, weights.recurrent)[0]
+    layers = predict(sent, weights.start, weights.decoder, weights.recurrent, weights.embed)[0]
     layers = bptt(sent, layers, weights, one_hot)
 
     # read the deltas
     # a random k
-    k = np.random.randint(2, len(vocab))
+    k = np.random.randint(2, len(layers))
     print(f"-- Layer {k} --")
     print(f"Pred: {layers[k]['pred']}")
     print(f"Hidden (stored in previous state): {layers[k-1]['hidden']}")
