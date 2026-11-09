@@ -34,9 +34,9 @@ def bptt(sent, layers, weights, one_hot):
 # Preconditions:
 # - My weights class won't be used by others
 # - The random seed is already set
-def train_step(sent, start, decoder, embed, recurrent, alpha, one_hot):
+def train_step(sent, start, decoder, recurrent, embed, alpha, one_hot):
     # Predict
-    layers, loss = predict(sent, start, decoder, embed, recurrent)
+    layers, loss = predict(sent, start, decoder, recurrent, embed)
 
     weights = pack(embed, recurrent, start, decoder) # pack the weights into my class
 
