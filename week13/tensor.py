@@ -22,7 +22,7 @@ class Tensor:
                     c.children[self.id] += 1
 
     def __repr__(self):
-        pass
+        return str(self.data)
 
     def __str__(self):
         return str(self.data)
@@ -34,12 +34,40 @@ class Tensor:
         return True
 
     def backward(self, grad = None, grad_origin = None):
-        pass
+        # If self.autograd is false, return a plain tensor takes no part in the walk
+        if not self.autograd:
+            return Tensor(self.data)
+
+        # If grad is None, start from ones
+        if grad is None:
+            grad = Tensor(np.ones_like(self.data))
+
+        # If grad_origin is given, a child is reporting. 
+        # If that child’s counter is already zero, raise Exception("cannot backprop more than once"); 
+        # otherwise decrement it
+        if grad_origin:
+            if self.children[grad_origin.id] == 0:
+                raise Exception("cannot backprop more than once")
+            else:
+                self.children[grad_origin.id] -= 1
+
+        # Accumulate into self.grad with += rather than overwriting.
+        if self.grad is None:
+            self.grad = grad
+        elif self.grad:
+            self.grad += grad
+
+        # Only recurse into creators once all_children_accounted_for() is true, or grad_origin is None
+        if self.all_children_accounted_for() or grad_origin is None:
+            if self.creation_op == "add":
+                self.creators[0].backward(grad = Tensor(self.grad.data), grad_origin = self)
+                self.creators[1].backward(grad = Tensor(self.grad.data), grad_origin = self)
+        
 
 
     def __add__(self, other):
         if self.autograd and other.autograd:
-            return Tensor(self.data + other.data, creators = [self, other], creation_op = "add")
+            return Tensor(self.data + other.data, autograd = True, creators = [self, other], creation_op = "add")
         else:
             return Tensor(self.data + other.data)
 
