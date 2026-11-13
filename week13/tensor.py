@@ -36,7 +36,7 @@ class Tensor:
     def backward(self, grad = None, grad_origin = None):
         # If self.autograd is false, return a plain tensor takes no part in the walk
         if not self.autograd:
-            return Tensor(self.data)
+            return
 
         # If grad is None, start from ones
         if grad is None:
@@ -62,14 +62,49 @@ class Tensor:
             if self.creation_op == "add":
                 self.creators[0].backward(grad = Tensor(self.grad.data), grad_origin = self)
                 self.creators[1].backward(grad = Tensor(self.grad.data), grad_origin = self)
-        
-
+            elif self.creation_op == "neg":
+                pass
+            elif self.creation_op == "sub":
+                pass
+            elif self.creation_op == "mul":
+                self.creators[0].backward(self.grad * self.creators[1], self)
+                self.creators[1].backward(self.grad * self.creators[0], self)
+            elif self.creation_op == "mm":
+                c0, c1 = self.creators
+                c0.backward(Tensor(self.grad.data.dot(c1.data.T)), self)
+                c1.backward(Tensor(c0.data.T.dot(self.grad.data)), self)
+            elif self.creation_op == "neg":
+                pass
+            elif self.creation_op == "transpose":
+                pass
+            elif self.creation_op == "sum":
+                pass
+            elif self.creation_op == "expand":
+                pass
 
     def __add__(self, other):
         if self.autograd and other.autograd:
             return Tensor(self.data + other.data, autograd = True, creators = [self, other], creation_op = "add")
         else:
             return Tensor(self.data + other.data)
+
+    def __sub__(self, other):
+        if self.autograd and other.autograd:
+            return Tensor(self.data - other.data, autograd = True, creators = [self, other], creation_op = "sub")
+        else:
+            return Tensor(self.data - other.data)
+
+    def __mul__(self, other):
+        if self.autograd and other.autograd:
+            return Tensor(self.data.dot(other.data), autograd = True, creators = [self, other], creation_op = "mul")
+        else:
+            return Tensor(self.data.dot(other.data))
+
+    def __neg__(self):
+        if self.autograd:
+            return Tensor(self.data * -1, autograd = True, creators = [self], creation_op = "neg")
+        else:
+            return Tensor(self.data * -1)
 
 
 
