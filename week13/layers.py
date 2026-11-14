@@ -20,7 +20,7 @@ class Linear(Layer):
         self.parameters.append(self.bias)
 
     def forward(self, input):
-        return input.__mm__(self.weight) + self.bias.expand(0, len(input.data))
+        return input.mm(self.weight) + self.bias.expand(0, len(input.data))
 
 
 class Sequential(Layer):
