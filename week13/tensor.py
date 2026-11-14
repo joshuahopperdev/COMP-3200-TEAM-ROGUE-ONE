@@ -110,13 +110,17 @@ class Tensor:
         else:
             return Tensor(self.data * -1)
 
-    def __mm__(self, other):
+    def __matmul__(self, other):
         if self.autograd and other.autograd:
             return Tensor(self.data.dot(other.data), autograd = True, creators = [self, other], creation_op = "mm")
         else:
             return Tensor(self.data.dot(other.data))
 
-    def __transpose__(self):
+    @property
+    def T(self):
+        return(self.transpose())
+    
+    def transpose(self):
         if self.autograd:
             return Tensor(self.data.T, autograd = True, creators = [self], creation_op = "transpose")
         else:
