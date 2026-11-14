@@ -59,27 +59,32 @@ class Tensor:
 
         # Only recurse into creators once all_children_accounted_for() is true, or grad_origin is None
         if self.all_children_accounted_for() or grad_origin is None:
-            if self.creation_op == "add":
-                self.creators[0].backward(grad = Tensor(self.grad.data), grad_origin = self)
-                self.creators[1].backward(grad = Tensor(self.grad.data), grad_origin = self)
+            if self.creation_op is None:
+                return
+            elif self.creation_op == "add":
+                self.creators[0].backward(grad = self.grad, grad_origin = self)
+                self.creators[1].backward(grad = self.grad, grad_origin = self)
             elif self.creation_op == "neg":
-                self.creators[0].backward(Tensor(-self.grad.data), self)
+                self.creators[0].backward(-self.grad, self)
             elif self.creation_op == "sub":
-                self.creators[0].backward(Tensor(self.grad.data), self)
-                self.creators[1].backward(Tensor(-self.grad.data), self)
+                self.creators[0].backward(self.grad, self)
+                self.creators[1].backward(self.grad, self)
             elif self.creation_op == "mul":
-                self.creators[0].backward(self.grad.data * self.creators[1], self)
-                self.creators[1].backward(self.grad.data * self.creators[0], self)
+                self.creators[0].backward(self.grad * self.creators[1], self)
+                self.creators[1].backward(self.grad * self.creators[0], self)
             elif self.creation_op == "mm":
                 c0, c1 = self.creators
                 c0.backward(Tensor(self.grad.data.dot(c1.data.T)), self)
                 c1.backward(Tensor(c0.data.T.dot(self.grad.data)), self)
             elif self.creation_op == "transpose":
-                self.creators[0].backward(Tensor(self.grad.data.T), self)
-            elif self.creation_op == "sum":
-                pass
-            elif self.creation_op == "expand":
-                pass
+                self.creators[0].backward(self.grad.T, self)
+            elif "sum" in self.creation_op:
+                dim = int(self.creation_op.split("_")[1])
+                ds = self.creators[0].data.shape[dim]
+                self.creators[0].backward(self.grad.expand(dim, ds), self)
+            elif "expand" in self.creation_op:
+                dim = int(self.creation_op.split("_")[1])
+                self.creators[0].backward(self.grad.sum(dim), self)
 
     def __add__(self, other):
         if self.autograd and other.autograd:
@@ -105,16 +110,37 @@ class Tensor:
         else:
             return Tensor(self.data * -1)
 
-    def __mm__(self, other):
+    def __matmul__(self, other):
         if self.autograd and other.autograd:
             return Tensor(self.data.dot(other.data), autograd = True, creators = [self, other], creation_op = "mm")
         else:
             return Tensor(self.data.dot(other.data))
 
-    def __transpose__(self):
+    @property
+    def T(self):
+        return(self.transpose())
+
+    def mm(self, other):
+        return self.__matmul__(self, other)
+    
+    def transpose(self):
         if self.autograd:
             return Tensor(self.data.T, autograd = True, creators = [self], creation_op = "transpose")
         else:
             return Tensor(self.data.T)
 
+    def sum(self, dim):
+        if self.autograd:
+            return Tensor(np.sum(self.data, dim), autograd = True, creators = [self], creation_op = f"sum_{dim}")
+        else:
+            return Tensor(np.sum(self.data, dim))
 
+    def expand(self, dim, n):
+        trans_cmd = list(range(0, len(self.data.shape)))
+        trans_cmd.insert(dim, len(self.data.shape))
+        new_data = self.data.repeat(n).reshape(list(self.data.shape) + [n]).transpose(trans_cmd)
+        
+        if not self.autograd:
+            return Tensor(new_data)
+        
+        return Tensor(new_data, autograd = True, creators = [self], creation_op = f"expand_{dim}")
