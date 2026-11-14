@@ -118,10 +118,10 @@ class Tensor:
 
     @property
     def T(self):
-        return(self.transpose())
+        return self.transpose()
 
     def mm(self, other):
-        return self.__matmul__(self, other)
+        return self @ other
     
     def transpose(self):
         if self.autograd:
