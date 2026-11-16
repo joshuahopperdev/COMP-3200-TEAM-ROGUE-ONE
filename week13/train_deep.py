@@ -9,6 +9,9 @@ target = Tensor([[0],[1],[0],[1]], autograd=True) # before the model
 model = Sequential([Linear(2,3), Tanh(), Linear(3,1), Sigmoid()])
 criterion = MSELoss()
 optim = SGD(parameters=model.get_parameters(), alpha=1)
-
-# 10 iterations: pred -> loss=criterion.forward(pred,target)
-# -> loss.backward() -> optim.step()
+for i in range(10):
+    pred = model.forward(data)
+    loss = criterion.forward(pred, target)
+    loss.backward()
+    optim.step()
+    print(loss)

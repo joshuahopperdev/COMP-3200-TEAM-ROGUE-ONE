@@ -45,19 +45,19 @@ class Tanh(Layer):
         super().__init__()
     
     def forward(self, input):
-        return np.tanh(input)
+        return input.tanh()
 
 class Sigmoid(Layer):
     def __init__(self):
         super().__init__()
 
     def forward(self, input):
-        return 1/(1+(np.exp(input)))
+        return input.sigmoid()
 
 class MSELoss(Layer):
     def __init__(self):
         super().__init__()
 
-    def forward(pred, target):
-        ((pred-target)*(pred-target)).sum(0)
+    def forward(self, pred, target):
+        return ((pred-target)*(pred-target)).sum(0)
 
