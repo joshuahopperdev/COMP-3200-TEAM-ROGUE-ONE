@@ -85,6 +85,12 @@ class Tensor:
             elif "expand" in self.creation_op:
                 dim = int(self.creation_op.split("_")[1])
                 self.creators[0].backward(self.grad.sum(dim), self)
+            elif self.creation_op == "tanh":
+                ones = Tensor(np.ones_like(self.grad.data))
+                self.creators[0].backward(grad = self.grad * (ones - self*self), grad_origin = self)
+            elif self.creation_op == "sigmoid":
+                ones = Tensor(np.ones_like(self.grad.data))
+                self.creators[0].backward(grad = self.grad * self * (ones - self), grad_origin = self)
 
     def __add__(self, other):
         if self.autograd and other.autograd:
@@ -144,3 +150,16 @@ class Tensor:
             return Tensor(new_data)
         
         return Tensor(new_data, autograd = True, creators = [self], creation_op = f"expand_{dim}")
+
+
+    def tanh(self):
+        if self.autograd:
+            return Tensor(np.tanh(self.data), autograd = True, creators = [self], creation_op = "tanh")
+        else:
+            return Tensor(np.tanh(self.data))
+
+    def sigmoid(self):
+        if self.autograd:
+            return Tensor(1 / (1 + np.exp(-self.data)), autograd = True, creators = [self], creation_op = "sigmoid")
+        else:
+            return Tensor(1 / (1 + np.exp(-self.data)))
