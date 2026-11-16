@@ -8,20 +8,20 @@ from optim import SGD
 def test_accumulation():
     _, b, _, _, _, f = get_test_tensors()
     f.backward(Tensor(np.array([1,1,1,1,1])))
-    assert np.all(b.grad.data == [2,2,2,2,2]), f"b's gradient must accumulate, got {b.grad.data}"
+    assert np.all(b.grad.data == np.array([2,2,2,2,2])), f"b's gradient must accumulate, got {b.grad.data}"
 
 def test_add_grad():
     a, b, c, d = get_test_tensors()[:4]
     g = (a + b) + (c + d)
     g.backward(get_ones(g))
     for x in a, b, c, d:
-        assert np.all(x.grad.data == get_ones(x)), f"Leaves need a gradient of ones, got {x.grad.data}"
+        assert np.all(x.grad.data == get_ones(x).data), f"Leaves need a gradient of ones, got {x.grad.data}"
 
 def test_numeric_grad():
     x = Tensor([2.0, 3.0], autograd=True)
     y = (x*x).sum(0)
-    y.backward(get_ones(y))
-    assert y.grad.data == [4,6], f"y's gradient must be [4,6], got {y.grad.data}"
+    y.backward(Tensor(np.array([1, 1])))
+    assert np.all(y.grad.data == np.array([4,6])), f"y's gradient must be [4,6], got {y.grad.data}"
     f = lambda n: (n*n).sum()
     epsilon, tolerance = 1e-5, 1e-4
     assert np.allclose([(f(x + epsilon*ei) - f(x - epsilon*ei)) / 2*epsilon for ei in np.array([[0,1],[1,0]])], tolerance), f"Central-difference estimate failed"
@@ -40,7 +40,7 @@ def test_step_dec_loss():
         loss.backward()
         optim.step()
         if prev_loss is not None:
-            assert loss < prev_loss, f"Loss must be strictly below the one before, got loss {loss} and previous loss {prev_loss}"
+            assert np.all(loss.data < prev_loss.data), f"Loss must be strictly below the one before, got loss {loss} and previous loss {prev_loss}"
         prev_loss = loss
 
 def test_shape_param_count():
@@ -69,8 +69,8 @@ def get_test_tensors() -> tuple[Tensor, Tensor, Tensor, Tensor, Tensor, Tensor]:
 
     return a, b, c, d, e, f
 
-def get_ones(ns: Tensor):
-    return np.ones_like(ns.data)
+def get_ones(ns: Tensor) -> Tensor:
+    return Tensor(np.ones_like(ns.data))
 
 if __name__ == "__main__":
     tests = [name for name in dir() if name.startswith("test_")]
