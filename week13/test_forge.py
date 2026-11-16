@@ -8,14 +8,14 @@ from optim import SGD
 def test_accumulation():
     _, b, _, _, _, f = get_test_tensors()
     f.backward(Tensor(np.array([1,1,1,1,1])))
-    assert b.grad.data == [2,2,2,2,2], f"b's gradient must accumulate, got {b.grad.data}"
+    assert np.all(b.grad.data == [2,2,2,2,2]), f"b's gradient must accumulate, got {b.grad.data}"
 
 def test_add_grad():
     a, b, c, d = get_test_tensors()[:4]
     g = (a + b) + (c + d)
     g.backward(get_ones(g))
-    for x in [a, b, c, d]:
-        assert x.grad.data == get_ones(x), f"Leaves need a gradient of ones, got {x.grad.data}"
+    for x in a, b, c, d:
+        assert np.all(x.grad.data == get_ones(x)), f"Leaves need a gradient of ones, got {x.grad.data}"
 
 def test_numeric_grad():
     x = Tensor([2.0, 3.0], autograd=True)
@@ -33,7 +33,6 @@ def test_step_dec_loss():
 
     model = Sequential([Linear(2, 3), Linear(3, 1)])
     optim = SGD(parameters=model.get_parameters(), alpha=0.01)
-    initial_loss = None
     prev_loss = None
     for _ in range(10):
         pred = model.forward(data)
@@ -42,10 +41,7 @@ def test_step_dec_loss():
         optim.step()
         if prev_loss is not None:
             assert loss < prev_loss, f"Loss must be strictly below the one before, got loss {loss} and previous loss {prev_loss}"
-        else:
-            initial_loss = loss # save initial loss for final comparison
         prev_loss = loss
-    assert prev_loss < initial_loss, f"Loss must be strictly below the initial one after 10 steps, got final loss {prev_loss} and initial loss {initial_loss}"
 
 def test_shape_param_count():
     model = Sequential([Linear(2,3), Tanh(), Linear(3,1), Sigmoid()])
@@ -62,7 +58,7 @@ def test_whole_grad():
     pass
 
 # -- Helpers --
-def get_test_tensors():
+def get_test_tensors() -> tuple[Tensor, Tensor, Tensor, Tensor, Tensor, Tensor]:
     a = Tensor([1, 2, 3, 4, 5], autograd=True)
     b = Tensor([2, 2, 2, 2, 2], autograd=True)
     c = Tensor([5, 4, 3, 2, 1], autograd=True)
@@ -73,8 +69,8 @@ def get_test_tensors():
 
     return a, b, c, d, e, f
 
-def get_ones(ns):
-    return np.ones_like(ns)
+def get_ones(ns: Tensor):
+    return np.ones_like(ns.data)
 
 if __name__ == "__main__":
     tests = [name for name in dir() if name.startswith("test_")]
