@@ -38,3 +38,26 @@ class Sequential(Layer):
         for layer in self.layers:
             parameters.extend(layer.get_parameters())
         return parameters
+
+
+class Tanh(Layer):
+    def __init__(self):
+        super().__init__()
+    
+    def forward(self, input):
+        return np.tanh(input)
+
+class Sigmoid(Layer):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, input):
+        return 1/(1+(np.exp(input)))
+
+class MSELoss(Layer):
+    def __init__(self):
+        super().__init__()
+
+    def forward(pred, target):
+        ((pred-target)*(pred-target)).sum(0)
+
