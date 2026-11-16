@@ -85,7 +85,9 @@ def test_whole_grad():
 
     # setup
     epsilon, tolerance = 1e-5, 1e-4
-    one_hot = np.zeros_like(model.get_parameters()[0])
+    # "one_hot" or essentially e1, the first standard basis
+    # vector for the first weight matrix scaled by the epsilon
+    one_hot = np.zeros_like(model.get_parameters()[0].data)
     one_hot[0] += epsilon
 
     # down
@@ -98,8 +100,8 @@ def test_whole_grad():
     model.get_parameters()[0] += Tensor(2*one_hot)
     lu = loss()
 
-    cdiff_est = (lu - ld) / 2*epsilon
-    # assert np.abs(cdiff_est) <= tolerance,
+    cdiff_est = (lu - ld).data / 2*epsilon
+    assert np.abs(cdiff_est) <= tolerance, f"Central difference failed, got {cdiff_est}"
 
 # -- Helpers --
 def get_test_tensors() -> tuple[Tensor, Tensor, Tensor, Tensor, Tensor, Tensor]:
