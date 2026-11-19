@@ -96,7 +96,7 @@ class Tensor:
                 with_zeroed = np.zeros_like(self.grad)
                 with_zeroed[inds] = self.grad[inds]
                 self.creators[0].backward(grad = with_zeroed, grad_origin = self)
-                
+
 
     def __add__(self, other):
         if self.autograd and other.autograd:
@@ -177,3 +177,8 @@ class Tensor:
             return indices_tensor
         else:
             return Tensor(self.data[indices.data])
+
+    def softmax(self):
+        expd = np.exp(self.data - np.max(self.data))
+        soft = expd / np.sum(expd)
+        return Tensor(soft)
