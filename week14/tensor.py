@@ -91,6 +91,12 @@ class Tensor:
             elif self.creation_op == "sigmoid":
                 ones = Tensor(np.ones_like(self.grad.data))
                 self.creators[0].backward(grad = self.grad * self * (ones - self), grad_origin = self)
+            elif self.creation_op == "index_select":
+                inds = self.index_select_indices
+                with_zeroed = np.zeros_like(self.grad)
+                with_zeroed[inds] = self.grad[inds]
+                self.creators[0].backward(grad = with_zeroed, grad_origin = self)
+                
 
     def __add__(self, other):
         if self.autograd and other.autograd:
@@ -163,3 +169,11 @@ class Tensor:
             return Tensor(1 / (1 + np.exp(-self.data)), autograd = True, creators = [self], creation_op = "sigmoid")
         else:
             return Tensor(1 / (1 + np.exp(-self.data)))
+
+    def index_select(self, indices):
+        if self.autograd:
+            indices_tensor = Tensor(self.data[indices.data], autograd = True, creators = [self], creation_op = "index_select")
+            indices_tensor.index_select_indices = indices
+            return indices_tensor
+        else:
+            return Tensor(self.data[indices.data])
