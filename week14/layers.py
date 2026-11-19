@@ -63,8 +63,8 @@ class LSTMCell(Layer):
         prev_hidden, prev_cell = hidden[0], hidden[1]
         f = (self.xf.forward(input) + self.hf.forward(prev_hidden)).sigmoid()
         i = (self.xi.forward(input) + self.hi.forward(prev_hidden)).sigmoid()
-        i = (self.xo.forward(input) + self.ho.forward(prev_hidden)).sigmoid()
-        i = (self.xc.forward(input) + self.hc.forward(prev_hidden)).tanh()
+        o = (self.xo.forward(input) + self.ho.forward(prev_hidden)).sigmoid()
+        g = (self.xc.forward(input) + self.hc.forward(prev_hidden)).tanh()
         c = (f * prev_cell) + (i * g)
         h = o * c.tanh()
         return self.w_ho.forward(h), (h, c)
@@ -74,6 +74,7 @@ class LSTMCell(Layer):
         c = Tensor(np.zeros((batch_size, self.n_hidden)), autograd=True)
         h.data[:, 0] += 1; c.data[:, 0] += 1
         return (h, c)
+    
 
 class Tanh(Layer):
     def __init__(self):
