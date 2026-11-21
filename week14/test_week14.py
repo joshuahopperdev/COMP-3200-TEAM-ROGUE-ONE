@@ -5,10 +5,9 @@ from exploding_gradients import exploding
 import train_lstm as T
 
 def test_index_select():
-    tensor = Tensor(np.eye(5), autograd=True)
-    indices = Tensor([[1,2,3],[2,3,4]])
-    rows = tensor.index_select(indices)
-    assert np.all(rows == [0,1,2,2,1]), f"Rows selected incorrectly, expected [0,1,2,2,1], got {rows}"
+    x = Tensor(np.eye(5), autograd=True)
+    x.index_select(Tensor([[1, 2, 3], [2, 3, 4]])).backward()
+    assert np.all(x.grad.data[:, 0].flatten() == [0,1,2,2,1]), f"Rows selected incorrectly, expected [0,1,2,2,1], got {x.grad.data[:, 0].flatten()}"
 
 def test_untrained_perplexity():
     np.random.seed(0)
@@ -33,7 +32,10 @@ def test_one_step_decreases_loss():
     assert np.all(second_loss < first_loss), f"One optimizer step should lower the LSTM's loss, got first loss={first_loss}, second loss={second_loss}"
 
 def test_exploding_gradients():
-    pass
+    step = np.random.randint(5, 20)
+    ge = exploding(step)
+    mags = [int(round(np.max(np.abs(g)))) for g in ge]
+    assert mags[-1] == 5 ** step, f"Gradient must explode, expected {5 ** step}, got {mags[-1]}"
 
 def train_step(hidden, bptt, bi, bt, model, embed, crit, optim):
     hidden = (Tensor(hidden[0].data, autograd=True),
