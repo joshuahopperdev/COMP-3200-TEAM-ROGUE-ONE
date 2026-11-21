@@ -92,12 +92,13 @@ class Tensor:
                 ones = Tensor(np.ones_like(self.grad.data))
                 self.creators[0].backward(grad = self.grad * self * (ones - self), grad_origin = self)
             elif self.creation_op == "index_select":
-                inds = self.index_select_indices
-                with_zeroed = np.zeros_like(self.grad)
-                with_zeroed[inds] = self.grad[inds]
-                self.creators[0].backward(grad = with_zeroed, grad_origin = self)
+                inds = self.index_select_indices.data
+                with_zeroed = np.zeros_like(self.creators[0].data)
+                np.add.at(with_zeroed, inds, self.grad.data)
+                self.creators[0].backward(grad=Tensor(with_zeroed), grad_origin = self)
             elif self.creation_op == "cross_entropy":
-                self.creators[0].backward(grad = Tensor(self.softmax_output - self.target_dist)/len(self.target_dist), grad_origin = self)
+                gradient = (self.softmax_output - self.target_dist) / len(self.target_dist)
+                self.creators[0].backward(grad=Tensor(gradient * self.grad.data), grad_origin=self)
 
 
     def __add__(self, other):
